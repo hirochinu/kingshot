@@ -117,12 +117,16 @@ function parseBonus(txt){
 
 function parseTroops(txt){
   var res={};
-  var km={"切り札歩兵":"inf","切り札騎兵":"cav","切り札弓兵":"arc","切 札歩兵":"inf","切 札騎兵":"cav","切 札弓兵":"arc","歩兵":"inf","騎兵":"cav","弓兵":"arc"};
+  var km=[
+    {k:"切り札弓兵",f:"arc"},{k:"切り札会兵",f:"arc"},{k:"切り札歩兵",f:"inf"},{k:"切り札騎兵",f:"cav"},
+    {k:"切 札弓兵",f:"arc"},{k:"切 札会兵",f:"arc"},{k:"切 札歩兵",f:"inf"},{k:"切 札騎兵",f:"cav"},
+    {k:"弓兵",f:"arc"},{k:"騎兵",f:"cav"},{k:"歩兵",f:"inf"}
+  ];
   var lines=txt.split(/\n|\r/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
   for(var i=0;i<lines.length;i++){
     var line=lines[i];
-    for(var key in km){
-      var fld=km[key];
+    for(var j=0;j<km.length;j++){
+      var key=km[j].k,fld=km[j].f;
       if(line.indexOf(key)!==-1&&res[fld]==null){
         if(i+1<lines.length){var m=lines[i+1].match(/[\d,]+/);if(m){res[fld]=parseInt(m[0].replace(/,/g,""));break;}}
         var m2=line.replace(key,"").match(/[\d,]+/);
@@ -231,8 +235,8 @@ function ToolHost(props){
   var infAtk=s1[0],setIA=s1[1],infLet=s2[0],setIL=s2[1];
   var cavAtk=s3[0],setCA=s3[1],cavLet=s4[0],setCL=s4[1];
   var arcAtk=s5[0],setAA=s5[1],arcLet=s6[0],setAL=s6[1];
-  var st=useState("tg3tg4"),sr=useState(0),sh=useState(false);
-  var tier=st[0],setTier=st[1],rosa=sr[0],setRosa=sr[1],huntingDance=sh[0],setHuntingDance=sh[1];
+  var st=useState("tg3tg4"),sr=useState(0);
+  var tier=st[0],setTier=st[1],rosa=sr[0],setRosa=sr[1];
   var curT=TIERS.find(function(t){return t.v===tier;})||TIERS[0];
   var rBon=ROSA_LIST[rosa]?ROSA_LIST[rosa].b:0;
   var vIA=parseFloat(infAtk)||0,vIL=parseFloat(infLet)||0;
@@ -317,24 +321,6 @@ function ToolHost(props){
           "弓兵ATK "+vAA.toFixed(1)+"% × "+(1+rBon/100).toFixed(2)+" = "+arcEff.toFixed(1)+"%"
         )
       ),
-      h("div",{className:"card"},
-        h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"マスター学院「ヴィラ」スキル「狩猟の舞」"),
-        h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"凶暴巨熊で発起した集結部隊の容量上限が 300,000 上昇します。"),
-        h("div",{className:"list-group",style:{marginBottom:0}},
-          [
-            {v:false,l:"使用していない"},
-            {v:true,l:"有効（＋300,000人）"}
-          ].map(function(opt){
-            var on=huntingDance===opt.v;
-            return h("div",{key:opt.v,className:"list-row"+(on?" on":""),
-              onClick:(function(v){return function(){setHuntingDance(v);};})(opt.v),
-              style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
-              h("span",{style:{fontSize:15,color:"#000"}},opt.l),
-              on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-            );
-          })
-        )
-      ),
       h("button",{className:"btn",onClick:function(){setStep(2);}},"次へ：結果を見る　→")
     ),
 
@@ -373,18 +359,6 @@ function ToolHost(props){
             h("div",{style:{height:5,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden"}},h("div",{style:{width:(row.w/calc.maxW*100)+"%",height:"100%",background:row.col,borderRadius:99}}))
           );
         }),
-        h("div",{className:"sep"}),
-        h("p",{className:"sec"},"集結容量"),
-        (function(){
-          var baseCap=300000;
-          var huntingBonus=huntingDance?300000:0;
-          var totalCap=baseCap+huntingBonus;
-          return h("div",{style:{display:"flex",flexDirection:"column",gap:10}},
-            h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}},h("span",{style:{color:"#6e6e73"}},"基本容量"),h("span",{style:{fontWeight:600,color:"#000"}},fmt(baseCap)+" 人")),
-            huntingDance&&h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}},h("span",{style:{color:"#6e6e73"}},"狩猟の舞 (+)"),h("span",{style:{fontWeight:600,color:"#34c759"}},"+"+ fmt(huntingBonus)+" 人")),
-            h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:15,fontWeight:700,padding:"8px 0",borderTop:".5px solid rgba(60,60,67,.18)",paddingTop:8}},h("span",null,"合計容量"),h("span",{style:{color:"#007aff"}},fmt(totalCap)+" 人"))
-          );
-        })(),
         h("div",{style:{marginTop:12,padding:"12px 14px",borderRadius:12,background:"rgba(255,149,0,.1)",fontSize:13,color:"#9a5f00",lineHeight:1.7}},
           "💡 この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。"
         ),
@@ -507,7 +481,7 @@ function ToolJoiner(props){
 
         h("textarea",{
           className:"paste-box",
-          placeholder:"👆 ここに貼り付け\n例：切り札歩兵\n404,872\n切り札騎兵\n288,422",
+          placeholder:"👆 ここに貼り付け\n例：切り札歩兵\n404,872\n切り札騎兵\n288,422\n切り札弓兵\n156,789",
           onChange:function(e){
             var p=parseTroops(e.target.value);
             if(p.inf!=null)setOI(String(p.inf));
@@ -868,8 +842,7 @@ function GuideHost(props){
       [
         {icon:"🔬",t:"研究",s:"戦闘ツリーの「編成拡大」を進める"},
         {icon:"🏛️",t:"施設",s:"指揮所のレベルを上げる"},
-        {icon:"🦌",t:"ペット",s:"巨大ヘラジカのスキルで容量+150,000（集結を立てる前に必ずON）"},
-        {icon:"🎓",t:"マスター",s:"ヴィラの「狩猟の舞」で容量+300,000"}
+        {icon:"🦌",t:"ペット",s:"巨大ヘラジカのスキルで容量+150,000（集結を立てる前に必ずON）"}
       ].map(function(item,i){
         return h("div",{key:i,style:{display:"flex",gap:10,padding:"8px 0",borderBottom:".5px solid rgba(60,60,67,.08)",alignItems:"flex-start"}},
           h("span",{style:{fontSize:16,flexShrink:0}},item.icon),
