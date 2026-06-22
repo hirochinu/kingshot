@@ -272,7 +272,7 @@ function ToolHost(props){
     ),
     h(Stepper,{step:step,labels:["ステータス入力","兵士・ローザ","結果"]}),
 
-    step===0&&h("div",{className:"step-content"},
+    step===0&&h("div",{key:step,className:"step-content"},
       h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(-1);}},"‹ メニューに戻る"),
       h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:4}},"ボーナス詳細ステータス"),
       h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:8,lineHeight:1.6}},"熊集結主に使う英雄で野獣狩りをした戦闘の結果メール（最下部のボーナス詳細）から入力してください。"),
@@ -295,7 +295,7 @@ function ToolHost(props){
       )
     ),
 
-    step===1&&h("div",{className:"step-content"},
+    step===1&&h("div",{key:step,className:"step-content"},
       h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(0);}},"‹ 入力に戻る"),
       h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"出征兵士の階層"),
@@ -328,7 +328,7 @@ function ToolHost(props){
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：結果を見る　→")
     ),
 
-    step===2&&h("div",{className:"step-content"},
+    step===2&&h("div",{key:step,className:"step-content"},
       h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(1);}},"‹ 兵士・ローザ設定に戻る"),
       h("div",{className:"card-hi"},
         h("p",{className:"sec"},"最適な兵種比率"),
@@ -648,7 +648,7 @@ function ToolJoiner(props){
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(3);}},"結果を見る　→")
     ),
 
-    step===3&&h("div",{className:"step-content"},
+    step===3&&h("div",{key:step,className:"step-content"},
       h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(2);}},"‹ 各行軍設定に戻る"),
       h("div",{style:{display:"flex",gap:6,marginBottom:16}},
         [{v:"even",l:"均等配分"},{v:"biased",l:"偏り配分"},{v:"none",l:"手動確認"}].map(function(m){
