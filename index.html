@@ -22,7 +22,7 @@ input[type=number]:focus{outline:none}
 .iw .sfx{font-size:13px;color:#8e8e93;padding:0 12px 0 0;white-space:nowrap}
 .btn{width:100%;padding:14px 0;border-radius:14px;background:#007aff;border:none;color:#fff;font-weight:600;font-size:16px;cursor:pointer;font-family:inherit;margin-top:14px;box-shadow:0 4px 14px rgba(0,122,255,.32)}
 .btn-gray{background:#8e8e93;box-shadow:none}
-.btn-back{background:rgba(255,255,255,.95);border:none;color:#007aff;font-size:15px;cursor:pointer;font-family:inherit;padding:8px 0;margin-bottom:12px;display:flex;align-items:center;gap:4px;font-weight:500;position:sticky;top:0;z-index:100}
+.btn-back{background:none;border:none;color:#007aff;font-size:15px;cursor:pointer;font-family:inherit;padding:4px 0;margin-bottom:16px;display:flex;align-items:center;gap:4px;font-weight:500}
 .menu-btn{padding:18px 20px;border-radius:16px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:16px;width:100%;border:none}
 .paste-box{width:100%;min-height:96px;padding:12px;border:2px dashed rgba(0,122,255,.3);border-radius:12px;font-size:13px;font-family:inherit;color:#000;background:rgba(0,122,255,.04);resize:vertical;outline:none;line-height:1.7}
 .paste-box:focus{outline:2px solid #007aff}
@@ -452,8 +452,9 @@ function ToolJoiner(props){
     h(Stepper,{step:step,labels:["兵士数入力","行軍設定","各行軍","結果"]}),
 
     step===0&&h("div",null,
-      h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"保有兵士数"),
-      h("div",{className:"card",style:{marginBottom:12}},
+      h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:4}},"保有兵士数"),
+      h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:8,lineHeight:1.6}},"部隊一覧からコピーしたテキストまたは手動で兵士数を入力してください。"),
+      h("div",{className:"card"},
         h("p",{className:"sec"},"テキスト貼り付けで自動入力"),
         h("div",{style:{background:"rgba(0,122,255,.07)",borderRadius:12,padding:"12px 14px",marginBottom:12}},
           h("p",{style:{fontSize:13,fontWeight:600,color:"#007aff",marginBottom:10}},"📋 テキストの取得方法"),
@@ -489,9 +490,9 @@ function ToolJoiner(props){
             if(p.cav!=null)setOC(String(p.cav));
             if(p.arc!=null)setOA(String(p.arc));
           }
-        })
-      ),
-      h("div",{className:"card"},
+        }),
+        h("div",{className:"sep"}),
+        h("p",{className:"sec"},"手動入力 / 確認・修正"),
         h("div",{style:{display:"flex",flexDirection:"column",gap:10}},
           h("div",{style:{display:"flex",alignItems:"center",gap:12}},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.inf,width:64,flexShrink:0}},"🛡️ 歩兵"),
