@@ -297,6 +297,7 @@ function ToolHost(props){
       h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"出征兵士の階層"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"集結に参加させる兵士の階層を選んでください。"),
+        h("div",{style:{background:"rgba(255,149,0,.08)",borderRadius:12,padding:"10px 12px",marginBottom:12,fontSize:12,color:"#9a5f00",lineHeight:1.6}},"💡 下記で設定したペット・学院のボーナスはツール側で自動加算されます。"),
         h("div",{className:"list-group",style:{marginBottom:16}},
           TIERS.map(function(t){
             var on=tier===t.v;
@@ -727,7 +728,7 @@ function ToolJoiner(props){
             ),
             h("div",{style:{marginTop:12,fontSize:12,color:"#6e6e73",lineHeight:1.6,paddingTop:12,borderTop:".5px solid rgba(60,60,67,.12)"}},
               h("strong",null,"容量ボーナス計："),h("br",null),
-              "ペットバフ：",petBuff?"+150,000人":"なし",h("br",null),
+              "ペット（巨大蛮牛）Lv"+petLv+"：",petLv?"+"+RAGING_BEAST_BONUSES[petLv].toLocaleString()+"人":"なし",h("br",null),
               "学院Lv"+villaLv+"：＋"+(villaLv*3000).toLocaleString()+"人"
             )
           ),
@@ -748,11 +749,11 @@ function GuideHost(props){
     {rank:5,name:"マリン（弓・S2）",note:"序盤サーバーの定番"}
   ];
   var SEASONS=[
-    {s:"S1",inf:"ヘルガ",cav:"ジェベル",arc:"サロ"},
-    {s:"S2",inf:"ゾーイ",cav:"ヒルデ",arc:"マリン"},
-    {s:"S3",inf:"ゾーイ",cav:"ペーラ",arc:"マリン"},
+    {s:"S1",inf:"アマデウス",cav:"ヘルガ",arc:"ジェベル"},
+    {s:"S2",inf:"ヒルデ",cav:"ゾーイ",arc:"マリン"},
+    {s:"S3",inf:"エリック",cav:"ペーラ",arc:"イェーガー"},
     {s:"S4",inf:"アルカ",cav:"マーゴ",arc:"ローザ"},
-    {s:"S5",inf:"ロン",cav:"フェイスルー",arc:"ビビアン"},
+    {s:"S5",inf:"龍飛",cav:"スルード",arc:"ビビアン"},
     {s:"S6",inf:"トリトン",cav:"ソフィア",arc:"ヤン"}
   ];
   return h("div",null,
@@ -788,7 +789,13 @@ function GuideHost(props){
         h("span",{style:{fontSize:18}},"🏆"),
         h("p",{style:{fontSize:15,fontWeight:700}},"長く使えるおすすめ英雄")
       ),
-      h("p",{style:{fontSize:13,color:"#8e8e93",marginBottom:10,lineHeight:1.6}},"「アマデウス＋自分のシーズンの弓英雄」の2本柱だけ育てればOK。"),
+      h("div",{style:{padding:"12px 14px",borderRadius:12,background:"rgba(52,199,89,.1)",fontSize:13,color:"#1a7a33",lineHeight:1.8,marginBottom:12}},
+        h("strong",null,"🎖️ アマデウス（歩・S1）"),h("br",null),
+        "生来スキル：殺傷力・HP +15%（常時発動）",h("br",null),
+        "全3スキルが確定バフ",h("br",null),
+        h("strong",null,"→ S1から最後まで一生使える最優先英雄")
+      ),
+      h("p",{style:{fontSize:13,color:"#8e8e93",marginBottom:10,lineHeight:1.6}},"アマデウス＋自分のシーズンの弓英雄の組み合わせが基本。"),
       HOST_HEROES.map(function(hero){
         var top2=hero.rank<=2;
         return h("div",{key:hero.rank,style:{display:"flex",alignItems:"flex-start",gap:12,padding:"10px 0",borderBottom:".5px solid rgba(60,60,67,.08)"}},
@@ -830,7 +837,7 @@ function GuideHost(props){
           )
         )
       ),
-      h("div",{style:{marginTop:10,fontSize:12,color:"#8e8e93",lineHeight:1.6}},"ホストの英雄は装備・星もフルに効くので、☆5・専用装備までしっかり育てる価値があります（ジョイナー用との大きな違い）。")
+      h("div",{style:{marginTop:10,fontSize:12,color:"#8e8e93",lineHeight:1.6}},"※アマデウスは全シーズン共通で最優先。下表はシーズン別の追加推奨英雄です。ホストの英雄は装備・星もフルに効くので、☆5・専用装備までしっかり育てる価値があります。")
     ),
 
     h("div",{className:"card"},
@@ -842,7 +849,7 @@ function GuideHost(props){
       [
         {icon:"🔬",t:"研究",s:"戦闘ツリーの「編成拡大」を進める"},
         {icon:"🏛️",t:"施設",s:"指揮所のレベルを上げる"},
-        {icon:"🦌",t:"ペット",s:"巨大ヘラジカのスキルで容量+150,000（集結を立てる前に必ずON）"}
+        {icon:"🦌",t:"ペット",s:"巨大蛮牛のスキルで容量UP（Lv×1,500、Lv10で+15,000）（集結を立てる前に必ずON）"}
       ].map(function(item,i){
         return h("div",{key:i,style:{display:"flex",gap:10,padding:"8px 0",borderBottom:".5px solid rgba(60,60,67,.08)",alignItems:"flex-start"}},
           h("span",{style:{fontSize:16,flexShrink:0}},item.icon),
@@ -991,7 +998,7 @@ function GuideJoiner(props){
       h("div",{style:{background:"rgba(0,122,255,.08)",borderRadius:12,padding:"12px 14px",fontSize:13,color:"#007aff",lineHeight:1.8}},
         h("strong",null,"S4以降の定番比率："),h("br",null),
         "歩兵 1% ／ 騎兵 10% ／ 弓兵 89%",h("br",null),
-        h("span",{style:{fontSize:12,color:"#6e6e73"}},"※歩兵は最低5,000体キープ。0%にすると英雄バフが丸ごと無効になります（※要検証）。")
+        h("span",{style:{fontSize:12,color:"#6e6e73"}},"※歩兵は最低5,000体キープ。複数兵種編成が英雄バフ最適化に必須。")
       )
     )
   );
