@@ -150,9 +150,7 @@ function GuideAccordion(props){
       h("div",{style:{display:"flex",alignItems:"center",gap:8}},
         h("div",{style:{width:10,height:10,borderRadius:"50%",background:color,flexShrink:0}}),
         h("span",{style:{fontSize:13,fontWeight:600,color:"#000"}},label)
-      ),
       h("span",{style:{fontSize:12,color:"#8e8e93"}},open?"▲":"▼")
-    ),
     open&&h("div",{style:{background:"rgba(118,118,128,.06)",borderRadius:"0 0 12px 12px",padding:"10px 14px"}},
       steps.map(function(g){
         return h("div",{key:g.n,className:"guide-step"},
@@ -161,10 +159,8 @@ function GuideAccordion(props){
             h("div",{className:"guide-text"},g.t),
             g.s&&h("div",{className:"guide-sub"},g.s),
             g.link&&h("a",{href:g.link.href,target:"_blank",rel:"noopener",style:{display:"inline-block",marginTop:4,fontSize:12,color:color,fontWeight:600}},g.link.label+" →")
-          )
         );
       })
-    )
   );
 }
 
@@ -177,7 +173,6 @@ function Stepper(props){
         h("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",gap:4,flexShrink:0}},
           h("div",{style:{width:26,height:26,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,background:done?"#007aff":active?"rgba(0,122,255,.15)":"rgba(118,118,128,.15)",color:done?"#fff":active?"#007aff":"#8e8e93",boxShadow:done?"0 2px 8px rgba(0,122,255,.35)":"none"}},done?"✓":String(i+1)),
           h("div",{style:{fontSize:10,color:active?"#007aff":"#8e8e93",fontWeight:active?600:400,whiteSpace:"nowrap"}},lb)
-        ),
         !isLast&&h("div",{style:{flex:1,height:1.5,background:done?"#007aff":"rgba(118,118,128,.2)",marginTop:12,marginLeft:4,marginRight:4}})
       );
     })
@@ -217,13 +212,11 @@ function PasteBonus(props){
         {n:4,t:"「テキスト」タブ →「すべてを選択」→「コピー」",s:"画面内の文字がすべて選択されます"},
         {n:5,t:"下のエリアに貼り付け",s:"自動でステータスを読み取ります"}
       ]})
-    ),
         h("textarea",{className:"paste-box",value:txt,placeholder:"👆 ここに貼り付け",onChange:function(e){handle(e.target.value);}}),
     result&&result.found>0&&h("div",null,
       h("div",{className:"toast toast-ok"},"✓ "+result.found+"/6項目を読み取りました"),
       h("div",{className:"preview-grid"},
         fields.map(function(f){var val=p[f.key];return h("div",{key:f.key,className:"preview-cell",style:{background:val!=null?f.bg:"rgba(118,118,128,.08)"}},h("div",{className:"preview-val",style:{color:val!=null?f.col:"#c7c7cc"}},val!=null?val.toFixed(1):"—"),h("div",{className:"preview-lbl",style:{color:val!=null?f.col:"#c7c7cc"}},f.lb));})
-      )
     ),
     result&&result.found===0&&h("div",{className:"toast toast-err"},"✗ 数値を検出できませんでした"),
     result&&result.found>0&&result.found<6&&h("div",{className:"toast toast-warn"},"⚠️ "+result.found+"/6項目のみ読み取れました")
@@ -268,7 +261,6 @@ function ToolHost(props){
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"集結用の最適兵割合"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"ボーナス詳細のステータスから最適な兵種比率を計算します")
-    ),
     h(Stepper,{step:step,labels:["ステータス入力","兵士・ローザ","結果"]}),
 
     step===0&&h("div",{className:"step-content"}
@@ -285,12 +277,10 @@ function ToolHost(props){
             h("div",{style:{display:"grid",gridTemplateColumns:"minmax(0,1fr) minmax(0,1fr)",gap:8}},
               h("div",null,h("p",{className:"fl"},"攻撃力"),h("div",{className:"iw"},h("input",{type:"number",value:row.atk,placeholder:"537",onChange:function(ev){row.setA(ev.target.value);},style:{color:row.col}}),h("span",{className:"sfx"},"%"))),
               h("div",null,h("p",{className:"fl"},"殺傷力"),h("div",{className:"iw"},h("input",{type:"number",value:row.lt,placeholder:"368",onChange:function(ev){row.setL(ev.target.value);},style:{color:row.col}}),h("span",{className:"sfx"},"%")))
-            )
           );
         }),
         !hasAll&&h("div",{style:{marginTop:8,fontSize:13,color:"#8e8e93",textAlign:"center"}},"6項目すべて入力すると次へ進めます"),
         h("button",{className:"btn"+(hasAll?"":" btn-gray"),disabled:!hasAll,onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：兵士の設定　→")
-      )
     ),
 
     step===1&&h("div",{className:"step-content"}
@@ -306,7 +296,6 @@ function ToolHost(props){
               on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
             );
           })
-        ),
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:6}},"ローザの遠征スキル「ゴールデン・リズム」"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.6}},"ローザを集結主に使用している場合のみ設定してください。弓兵ATKが強化されるため最適な兵種比率が変わります。"),
         h("div",{className:"list-group",style:{marginBottom:0}},
@@ -317,13 +306,10 @@ function ToolHost(props){
               on&&h("span",{style:{fontSize:18,color:"#007aff",flexShrink:0}},"✓")
             );
           })
-        ),
         rosa>0&&h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(0,122,255,.1)",fontSize:13,color:"#007aff",marginTop:12}},
           "弓兵ATK "+vAA.toFixed(1)+"% × "+(1+rBon/100).toFixed(2)+" = "+arcEff.toFixed(1)+"%"
-        )
       ),
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：結果を見る　→")
-    ),
 
     step===2&&h("div",{className:"step-content"}
       h("div",{className:"card-hi"},
@@ -334,7 +320,6 @@ function ToolHost(props){
             h("div",{style:{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:66,height:66,borderRadius:"50%",background:"rgba(255,255,255,.95)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2}},
               h("div",{style:{fontSize:7,color:"#8e8e93",letterSpacing:1}},"OPTIMAL"),
               h("div",{style:{fontSize:9,fontWeight:700,color:"#000",textAlign:"center",lineHeight:1.5}},"歩"+opt.inf,h("br",null),"騎"+opt.cav+" 弓"+opt.arc)
-            )
           ),
           h("div",{style:{flex:1,display:"flex",flexDirection:"column",gap:14}},
             [{lb:"歩兵",em:"🛡️",val:opt.inf,col:IC.inf,bg:IB.inf},
@@ -345,11 +330,9 @@ function ToolHost(props){
                 h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}},
                   h("div",{style:{display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#6e6e73"}},h("div",{style:{width:10,height:10,borderRadius:"50%",background:d.col,flexShrink:0}}),d.em," ",d.lb),
                   h("span",{style:{fontSize:22,fontWeight:700,color:d.col}},d.val,h("span",{style:{fontSize:13,fontWeight:400}},"%"))
-                ),
                 h("div",{style:{height:4,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden"}},h("div",{style:{width:d.val+"%",height:"100%",background:d.col,borderRadius:99}}))
               );
             })
-          )
         ),
         h("div",{className:"sep"}),
         h("p",{className:"sec"},"効率スコア"),
@@ -361,9 +344,7 @@ function ToolHost(props){
         }),
         h("div",{style:{marginTop:12,padding:"12px 14px",borderRadius:12,background:"rgba(255,149,0,.1)",fontSize:13,color:"#9a5f00",lineHeight:1.7}},
           "💡 この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。"
-        ),
         h("button",{className:"btn btn-gray",onClick:function(){window.scrollTo(0,0),setStep(0);}},"最初からやり直す")
-      )
     )
   );
 }
@@ -446,7 +427,6 @@ function ToolJoiner(props){
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"ジョイナーの兵配分"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"手持ち兵士を各行軍にどう配分するか算出します")
-    ),
     h(Stepper,{step:step,labels:["兵士数入力","行軍設定","各行軍","結果"]}),
 
     step===0&&h("div",null,
@@ -477,7 +457,6 @@ function ToolJoiner(props){
             ],
             color:"#34c759"
           })
-        ),
 
         h("textarea",{
           className:"paste-box",
@@ -495,23 +474,17 @@ function ToolJoiner(props){
           h("div",{style:{display:"flex",alignItems:"center",gap:12}},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.inf,width:64,flexShrink:0}},"🛡️ 歩兵"),
             h("div",{className:"iw",style:{flex:1}},h("input",{type:"number",value:oI,placeholder:"0",onChange:function(ev){setOI(ev.target.value);}}),h("span",{className:"sfx"},"人"))
-          ),
           h("div",{style:{display:"flex",alignItems:"center",gap:12}},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.cav,width:64,flexShrink:0}},"🐎 騎兵"),
             h("div",{className:"iw",style:{flex:1}},h("input",{type:"number",value:oC,placeholder:"0",onChange:function(ev){setOC(ev.target.value);}}),h("span",{className:"sfx"},"人"))
-          ),
           h("div",{style:{display:"flex",alignItems:"center",gap:12}},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.arc,width:64,flexShrink:0}},"🏹 弓兵"),
             h("div",{className:"iw",style:{flex:1}},h("input",{type:"number",value:oA,placeholder:"0",onChange:function(ev){setOA(ev.target.value);}}),h("span",{className:"sfx"},"人"))
-          ),
           (nI+nC+nA)>0&&h("div",{style:{borderTop:".5px solid rgba(60,60,67,.12)",paddingTop:10,display:"flex",justifyContent:"space-between"}},
             h("span",{style:{fontSize:13,color:"#6e6e73"}},"合計"),
             h("span",{style:{fontSize:16,fontWeight:700}},fmt(nI+nC+nA)+" 人")
-          )
         )
-      ),
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：行軍設定　→")
-    ),
 
     step===1&&h("div",null
       h("div",{className:"card",style:{marginBottom:12}},
@@ -527,10 +500,8 @@ function ToolJoiner(props){
               h("div",{style:{display:"flex",alignItems:"center",gap:10}},
                 lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(RAGING_BEAST_BONUSES[lv]).toLocaleString()+"人"),
                 on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-              )
             );
           })
-        ),
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"マスター学院「人数優位」Lv"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
         h("div",{className:"list-group",style:{marginBottom:0}},
@@ -543,10 +514,8 @@ function ToolJoiner(props){
               h("div",{style:{display:"flex",alignItems:"center",gap:10}},
                 lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(lv*3000).toLocaleString()+"人"),
                 on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-              )
             );
           })
-        )
       ),
       h("div",{className:"card",style:{marginBottom:12}},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"使用できる行軍数"),
@@ -568,13 +537,10 @@ function ToolJoiner(props){
               h("div",{style:{display:"flex",alignItems:"center",gap:10}},
                 h("span",{style:{fontSize:12,color:"#8e8e93"}},m.s),
                 on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-              )
             );
           })
-        )
       ),
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：各行軍の設定　→")
-    ),
 
     step===2&&h("div",null
       h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"各行軍の設定"),
@@ -599,7 +565,6 @@ function ToolJoiner(props){
                 setMSz(a);
               };})(i)
             }),h("span",{className:"sfx"},"人"))
-          ),
           h("p",{className:"fl",style:{marginBottom:8}},"兵種の割合"),
           h("div",{style:{display:"flex",flexDirection:"column",gap:8}},
             h("div",{style:{display:"flex",alignItems:"center",gap:12}},
@@ -614,7 +579,6 @@ function ToolJoiner(props){
                   };})(i)
                 }),
                 h("span",{className:"sfx"},"%")
-              )
             ),
             h("div",{style:{display:"flex",alignItems:"center",gap:12}},
               h("span",{style:{fontSize:13,fontWeight:600,color:IC.cav,width:64,flexShrink:0}},"🐎 騎兵%"),
@@ -628,18 +592,15 @@ function ToolJoiner(props){
                   };})(i)
                 }),
                 h("span",{className:"sfx"},"%")
-              )
             ),
             entered&&h("div",{style:{display:"flex",alignItems:"center",gap:12}},
               h("span",{style:{fontSize:13,fontWeight:600,color:IC.arc,width:64,flexShrink:0}},"🏹 弓兵%"),
               h("div",{style:{flex:1,padding:"10px 12px",borderRadius:10,background:IB.arc,fontSize:15,fontWeight:600,color:IC.arc}},Math.max(0,100-pI-pC)+"% （自動）")
-            )
           ),
           over&&h("div",{className:"toast toast-warn",style:{marginTop:8}},"⚠️ 歩兵＋騎兵の合計が"+(pI+pC)+"%です")
         );
       }),
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(3);}},"結果を見る　→")
-    ),
 
     step===3&&h("div",{className:"step-content"}
       h("div",{style:{display:"flex",gap:6,marginBottom:16}},
@@ -651,7 +612,6 @@ function ToolJoiner(props){
               background:on?"#007aff":"rgba(118,118,128,.12)",
               color:on?"#fff":"#6e6e73"}},m.l);
         })
-      ),
       (function(){
         // 全行軍合計を1回だけ計算し、行軍カードと残り表示の両方で共有
         var totI=0,totC=0,totA=0;
@@ -665,7 +625,6 @@ function ToolJoiner(props){
                 h("p",{style:{fontSize:15,fontWeight:600}},ML[i]),
                 h("div",{style:{fontSize:13,color:hasShortage?"#ff3b30":"#34c759",fontWeight:600}},
                   hasShortage?"▼ 保有数不足":"✓ 保有数OK"
-                )
               ),
               h("div",{style:{display:"flex",gap:8}},
                 [{em:"🛡️",lb:"歩兵",n:res.inf,pct:res.inf>0?Math.round(res.inf/res.total*100):0,col:IC.inf,bg:IB.inf},
@@ -678,7 +637,6 @@ function ToolJoiner(props){
                     h("div",{style:{fontSize:11,color:t.col,opacity:.7,marginTop:2}},fmt(t.n)+" 人")
                   );
                 })
-              ),
               mode==="none"&&h("div",{style:{marginTop:12}},
                 h("p",{style:{fontSize:12,color:"#6e6e73",marginBottom:8,fontWeight:600}},"この行軍の必要数"),
                 [{em:"🛡️",lb:"歩兵",need:res.inf,totalNeed:totI,have:nI,col:IC.inf},
@@ -694,17 +652,13 @@ function ToolJoiner(props){
                       h("div",{style:{textAlign:"right"}},
                         h("div",{style:{fontSize:14,fontWeight:700,color:ok?"#34c759":"#ff3b30"}},
                           ok?"✓ 足りる":"▼ "+fmt(lack)+"人 不足"
-                        ),
                         h("div",{style:{fontSize:11,color:"#8e8e93"}},"必要:"+fmt(t.need)+"　保有:"+fmt(t.have)+"　全行軍計:"+fmt(t.totalNeed))
-                      )
                     ),
                     h("div",{style:{height:6,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden",display:"flex"}},
                       h("div",{style:{width:greenPct+"%",height:"100%",background:"#34c759",flexShrink:0}}),
                       !ok&&h("div",{style:{flex:1,height:"100%",background:"#ff3b30"}})
-                    )
                   );
                 })
-              )
             );
           }),
           !calcResult&&h("div",{className:"toast toast-warn"},"⚠️ 保有数または出征容量が入力されていません"),
@@ -721,17 +675,14 @@ function ToolJoiner(props){
                   h("div",{style:{fontSize:16,fontWeight:700,color:neg?"#ff3b30":t.col}},(neg?"▼ -":"")+fmt(t.n))
                 );
               })
-            ),
             h("div",{style:{marginTop:12,fontSize:12,color:"#6e6e73",lineHeight:1.6,paddingTop:12,borderTop:".5px solid rgba(60,60,67,.12)"}},
               h("strong",null,"容量ボーナス計："),h("br",null),
               "ペット（巨大蛮牛）Lv"+petLv+"：",petLv?"+"+RAGING_BEAST_BONUSES[petLv].toLocaleString()+"人":"なし",h("br",null),
               "学院Lv"+villaLv+"：＋"+(villaLv*3000).toLocaleString()+"人"
-            )
           ),
           h("button",{className:"btn btn-gray",style:{marginTop:8},onClick:function(){window.scrollTo(0,0),setStep(0);}},"最初からやり直す")
         );
       })()
-    )
   );
 }
 
@@ -756,40 +707,32 @@ function GuideHost(props){
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結主（ホスト）ガイド"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"集結を立てる人のための基本知識")
-    ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
         h("span",{style:{fontSize:18}},"❓"),
         h("p",{style:{fontSize:15,fontWeight:700}},"集結主ってなに？")
-      ),
       h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.8,marginBottom:10}},
         "熊集結を立てる人のことです。ジョイナー（参加する人）との違いはここ："
-      ),
       h("div",{style:{display:"flex",flexDirection:"column",gap:8,marginBottom:12}},
         h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(118,118,128,.08)",fontSize:13,lineHeight:1.7}},
           h("strong",null,"ジョイナー"),h("span",{style:{color:"#8e8e93"}}," → "),"左英雄のスキル1だけが有効"
-        ),
         h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(0,122,255,.08)",fontSize:13,lineHeight:1.7,color:"#007aff"}},
           h("strong",null,"集結主"),h("span",{style:{color:"#8e8e93"}}," → "),"英雄3体の全スキル・装備・専用装備・ペットが全部有効"
-        )
       ),
       h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(255,149,0,.1)",fontSize:13,color:"#9a5f00",lineHeight:1.7}},
         "戦闘は集結主の強さを基準に計算されます。ホストが強いほど全員のダメージが伸びる仕組みなので、",h("strong",null,"全員で参加するのが理想です。")
-      )
     ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:12}},
         h("span",{style:{fontSize:18}},"🏆"),
         h("p",{style:{fontSize:15,fontWeight:700}},"長く使えるおすすめ英雄")
-      ),
       h("div",{style:{padding:"12px 14px",borderRadius:12,background:"rgba(52,199,89,.1)",fontSize:13,color:"#1a7a33",lineHeight:1.8,marginBottom:12}},
         h("strong",null,"🎖️ アマデウス（歩・S1）"),h("br",null),
         "生来スキル：殺傷力・HP +15%（常時発動）",h("br",null),
         "全3スキルが確定バフ",h("br",null),
         h("strong",null,"→ S1から最後まで一生使える最優先英雄")
-      ),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginBottom:10,lineHeight:1.6}},"アマデウス＋自分のシーズンの弓英雄の組み合わせが基本。"),
       HOST_HEROES.map(function(hero){
         var top2=hero.rank<=2;
@@ -798,19 +741,16 @@ function GuideHost(props){
           h("div",null,
             h("div",{style:{fontSize:14,fontWeight:600,marginBottom:2}},hero.name),
             h("div",{style:{fontSize:12,color:"#8e8e93"}},hero.note)
-          )
         );
       }),
       h("div",{style:{marginTop:12,padding:"10px 14px",borderRadius:12,background:"rgba(255,59,48,.08)",fontSize:13,color:"#c0392b",lineHeight:1.7}},
         h("strong",null,"ダメな例："),"ゴードンなどの守り系英雄。熊はこちらの兵士を倒せないので、守りのスキルは入れるだけ損です。"
-      )
     ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:12}},
         h("span",{style:{fontSize:18}},"📅"),
         h("p",{style:{fontSize:15,fontWeight:700}},"いま使うべき3体（シーズン別）")
-      ),
       h("div",{style:{overflowX:"auto"}},
         h("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:13}},
           h("thead",null,
@@ -818,7 +758,6 @@ function GuideHost(props){
               ["S","歩兵","騎兵","弓兵"].map(function(th){
                 return h("th",{key:th,style:{padding:"8px 8px",textAlign:"left",color:"#6e6e73",fontWeight:600}},th);
               })
-            )
           ),
           h("tbody",null,
             SEASONS.map(function(row){
@@ -829,17 +768,13 @@ function GuideHost(props){
                 h("td",{style:{padding:"8px 8px",fontWeight:600}},row.arc)
               );
             })
-          )
         )
-      ),
       h("div",{style:{marginTop:10,fontSize:12,color:"#8e8e93",lineHeight:1.6}},"※アマデウスは全シーズン共通で最優先。下表はシーズン別の追加推奨英雄です。ホストの英雄は装備・星もフルに効くので、☆5・専用装備までしっかり育てる価値があります。")
-    ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
         h("span",{style:{fontSize:18}},"👥"),
         h("p",{style:{fontSize:15,fontWeight:700}},"集結容量を増やすには")
-      ),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginBottom:10}},"容量が大きい＝兵士を多く詰める＝ダメージが伸びる"),
       [
         {icon:"🔬",t:"研究",s:"戦闘ツリーの「編成拡大」を進める"},
@@ -851,32 +786,25 @@ function GuideHost(props){
           h("div",null,
             h("span",{style:{fontSize:13,fontWeight:600}},item.t,"　"),
             h("span",{style:{fontSize:13,color:"#3a3a3c"}},item.s)
-          )
         );
       })
-    ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
         h("span",{style:{fontSize:18}},"🏹"),
         h("p",{style:{fontSize:15,fontWeight:700}},"兵士の入れ方")
-      ),
       h("div",{style:{padding:"12px 14px",borderRadius:12,background:"rgba(0,122,255,.08)",fontSize:13,color:"#007aff",lineHeight:1.8,marginBottom:10}},
         h("strong",null,"S4以降の定番比率："),h("br",null),
         "歩兵 1% ／ 騎兵 10% ／ 弓兵 89%",h("br",null),
         h("span",{style:{fontSize:12,color:"#6e6e73"}},"※歩兵は最低5,000体キープ。弓兵は熊に一番ダメージが出る兵種。")
-      ),
       h("div",{style:{padding:"12px 14px",borderRadius:12,background:"rgba(52,199,89,.1)",fontSize:13,color:"#1a7a33",lineHeight:1.7,marginBottom:10}},
         "💡 自分のステータスに合った最適比率は「熊集結主 兵士算出ツール」で計算できます。定番比率と比べてみましょう。"
-      ),
       h("div",{style:{fontSize:13,color:"#8e8e93",lineHeight:1.6}},"熊集結は立てるのも参加するのも領主体力を消費しません（巨獣集結などとは別物）。")
-    ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
         h("span",{style:{fontSize:18}},"✅"),
         h("p",{style:{fontSize:15,fontWeight:700}},"出陣前チェック（3つだけ）")
-      ),
       [
         "英雄3体が火力系になっているか（守り系が混ざっていないか）",
         "ヘラジカのバフをONにしたか",
@@ -887,7 +815,6 @@ function GuideHost(props){
           h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.7}},line)
         );
       })
-    )
   );
 }
 
@@ -906,29 +833,23 @@ function GuideJoiner(props){
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊ジョイナー 左英雄指定ガイド"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"初心者向け・熊集結ジョイナーの基本知識")
-    ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
         h("span",{style:{fontSize:18}},"❓"),
         h("p",{style:{fontSize:15,fontWeight:700}},"左英雄指定とは？なぜ重要？")
-      ),
       h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.8,marginBottom:10}},
         "熊集結に参加するとき、ゲームが見るのは",h("strong",null,"一番左に置いた英雄の遠征スキル1（右列・一番上）だけ"),"です。左以外の2体は誰でもよく、装備も影響しません。"
-      ),
       h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.8,marginBottom:10}},
         "集結では参加者全員のスキル1のうち、",h("strong",null,"レベルが高い順に4つだけ"),"がバフとして発動します。守り系英雄を左に置くとこの貴重な4枠を1つ潰し、同盟全員のダメージが上がらない要因になってしまいます。"
-      ),
       h("div",{style:{background:"rgba(0,122,255,.08)",borderRadius:12,padding:"10px 14px",fontSize:13,color:"#007aff",lineHeight:1.7}},
         "※自分が集結を立てる側（ホスト）のときは3体全スキル有効。左指定を気にするのは",h("strong",null,"参加時のみ"),"。"
-      )
     ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:12}},
         h("span",{style:{fontSize:18}},"🏆"),
         h("p",{style:{fontSize:15,fontWeight:700}},"左に置くべき英雄（優先順）")
-      ),
       h("div",{style:{overflowX:"auto"}},
         h("table",{style:{width:"100%",borderCollapse:"collapse",fontSize:12}},
           h("thead",null,
@@ -936,7 +857,6 @@ function GuideJoiner(props){
               ["優先","英雄","スキル1","系統","ポイント"].map(function(th){
                 return h("th",{key:th,style:{padding:"6px 6px",textAlign:"left",color:"#6e6e73",fontWeight:600,whiteSpace:"nowrap"}},th);
               })
-            )
           ),
           h("tbody",null,
             HEROES.map(function(hero){
@@ -944,31 +864,25 @@ function GuideJoiner(props){
               return h("tr",{key:hero.rank,style:{borderBottom:".5px solid rgba(60,60,67,.08)",background:top3?"rgba(0,122,255,.04)":"transparent"}},
                 h("td",{style:{padding:"8px 6px"}},
                   h("div",{style:{width:24,height:24,borderRadius:"50%",background:top3?"#007aff":"rgba(118,118,128,.15)",color:top3?"#fff":"#6e6e73",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700}},hero.rank)
-                ),
                 h("td",{style:{padding:"8px 6px",fontWeight:600,whiteSpace:"nowrap"}},hero.name),
                 h("td",{style:{padding:"8px 6px",color:"#007aff",whiteSpace:"nowrap"}},hero.skill),
                 h("td",{style:{padding:"8px 6px",color:"#8e8e93",whiteSpace:"nowrap"}},hero.type),
                 h("td",{style:{padding:"8px 6px",color:"#3a3a3c",fontSize:11,lineHeight:1.5}},hero.note)
               );
             })
-          )
         )
-      ),
       h("div",{style:{marginTop:12,padding:"10px 14px",borderRadius:12,background:"rgba(255,149,0,.1)",fontSize:13,color:"#9a5f00",lineHeight:1.7}},
         h("strong",null,"バフの仕組み："),"同じ系統同士は足し算、違う系統は掛け算。「殺傷系（チェンコ）＋攻撃系（あまね/マーゴ）」を混ぜるのが理想。",h("br",null),
         "例：チェンコ×3＋あまね×1 ＝ 2.19倍　＞　チェンコ×4 ＝ 2.0倍"
-      ),
       h("div",{style:{marginTop:10,padding:"10px 14px",borderRadius:12,background:"rgba(255,59,48,.08)",fontSize:13,color:"#c0392b",lineHeight:1.7}},
         h("strong",null,"置いてはいけない英雄："),NG.join("・")+"などの守り系。",h("br",null),
         "熊はこちらの兵を倒せないため、HPアップ・ダメージ軽減は完全に無駄。バフ枠を潰すだけで逆効果です。"
-      )
     ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
         h("span",{style:{fontSize:18}},"⭐"),
         h("p",{style:{fontSize:15,fontWeight:700}},"育成目標は「☆4＋遠征スキル1だけLv5」")
-      ),
       [
         "バフ4枠の選定基準はスキル1のレベルだけ。Lv5必須（遠征スキルブック165個）。",
         "星は☆4まで（Lv5の上限解放に必要）。☆5・装備・他スキルはジョイナー性能に影響なし。",
@@ -979,21 +893,17 @@ function GuideJoiner(props){
           h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.7}},line)
         );
       })
-    ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
         h("span",{style:{fontSize:18}},"🏹"),
         h("p",{style:{fontSize:15,fontWeight:700}},"もう1つの柱：兵士の数とティア")
-      ),
       h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.8,marginBottom:8}},
         "左英雄と同じくらい大事なのが",h("strong",null,"送る兵士の数と種類"),"です。できるだけ強い兵士（兵士レベルが高いもの）を満タンで送ること。"
-      ),
       h("div",{style:{background:"rgba(0,122,255,.08)",borderRadius:12,padding:"12px 14px",fontSize:13,color:"#007aff",lineHeight:1.8}},
         h("strong",null,"S4以降の定番比率："),h("br",null),
         "歩兵 1% ／ 騎兵 10% ／ 弓兵 89%",h("br",null),
         h("span",{style:{fontSize:12,color:"#6e6e73"}},"※歩兵は最低5,000体キープ。複数兵種編成が英雄バフ最適化に必須。")
-      )
     )
   );
 }
@@ -1011,7 +921,6 @@ function App(){
       h("div",null,
         h("h1",{style:{fontSize:22,fontWeight:700,letterSpacing:"-.5px"}},"KINGSHOT 算出ツール"),
         h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:2}},"どれを計算しますか？")
-      )
     ),
 
     h("p",{style:{fontSize:12,fontWeight:600,color:"#6e6e73",marginBottom:8,letterSpacing:".04em"}},"🐻 巨熊狩猟"),
@@ -1023,20 +932,16 @@ function App(){
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊集結主 兵士算出ツール"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"最適な兵種比率を計算")
-          )
         ),
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
-      ),
       h("div",{className:"list-row",onClick:function(){setMode("guide-host");}},
         h("div",{style:{display:"flex",alignItems:"center",gap:12}},
           h("span",{style:{fontSize:22}},"📖"),
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊集結主ガイド"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"英雄・容量・出陣前チェックなど")
-          )
         ),
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
-      )
     ),
     h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"ジョイナー"),
     h("div",{className:"list-group",style:{marginBottom:20}},
@@ -1046,20 +951,16 @@ function App(){
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊ジョイナー 兵士算出ツール"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"各行軍の兵配分を計算")
-          )
         ),
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
-      ),
       h("div",{className:"list-row",onClick:function(){setMode("guide-joiner");}},
         h("div",{style:{display:"flex",alignItems:"center",gap:12}},
           h("span",{style:{fontSize:22}},"📖"),
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊ジョイナーガイド"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"左英雄指定・兵種比率・最適英雄など")
-          )
         ),
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
-      )
     )
   );
 }
