@@ -452,11 +452,33 @@ function ToolJoiner(props){
     h(Stepper,{step:step,labels:["兵士数入力","行軍設定","各行軍","結果"]}),
 
     step===0&&h("div",null,
-      h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:4}},"保有兵士数"),
-      h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:8,lineHeight:1.6}},"KINGSHOT内で、自分のアイコンをタップ → 部隊 → 「全部」タブから入力してください。"),
-      h("div",{className:"card"},
+      h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"保有兵士数"),
+      h("div",{className:"card",style:{marginBottom:12}},
         h("p",{className:"sec"},"テキスト貼り付けで自動入力"),
-  
+        h("div",{style:{background:"rgba(0,122,255,.07)",borderRadius:12,padding:"12px 14px",marginBottom:12}},
+          h("p",{style:{fontSize:13,fontWeight:600,color:"#007aff",marginBottom:10}},"📋 テキストの取得方法"),
+          h(GuideAccordion,{
+            label:"iOS",
+            steps:[
+              {n:1,t:"部隊一覧を開く",s:"自分のアイコン → 部隊 → 全部タブ"},
+              {n:2,t:"部隊一覧画面のスクショを撮る",s:""},
+              {n:3,t:"スクショから兵士名を長押し →「すべてを選択」→「コピー」",s:"クリップボードにコピーされます"},
+              {n:4,t:"下のエリアに貼り付け",s:"自動で兵士数を読み取ります"}
+            ],
+            color:"#007aff"
+          }),
+          h(GuideAccordion,{
+            label:"Android",
+            steps:[
+              {n:1,t:"部隊一覧を開く",s:"自分のアイコン → 部隊 → 全部タブ"},
+              {n:2,t:"部隊一覧画面のスクショを撮る",s:""},
+              {n:3,t:"Googleレンズでスクショを読み取る",s:"",link:{href:"https://lens.google.com",label:"Googleレンズを開く"}},
+              {n:4,t:"「テキスト」タブ →「すべてを選択」→「コピー」",s:"兵士名と数値がまとめてコピーされます"},
+              {n:5,t:"下のエリアに貼り付け",s:"自動で兵士数を読み取ります"}
+            ],
+            color:"#34c759"
+          })
+        ),
 
         h("textarea",{
           className:"paste-box",
@@ -469,8 +491,7 @@ function ToolJoiner(props){
           }
         })
       ),
-        h("div",{className:"sep"}),
-        h("p",{className:"sec"},"手動入力 / 確認・修正"),
+      h("div",{className:"card"},
         h("div",{style:{display:"flex",flexDirection:"column",gap:10}},
           h("div",{style:{display:"flex",alignItems:"center",gap:12}},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.inf,width:64,flexShrink:0}},"🛡️ 歩兵"),
@@ -495,7 +516,7 @@ function ToolJoiner(props){
 
     step===1&&h("div",null,
       h("button",{className:"btn-back",onClick:function(){setStep(0);}},"‹ 保有数に戻る"),
-      h("div",{className:"card"},
+      h("div",{className:"card",style:{marginBottom:12}},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
         h("div",{className:"list-group",style:{marginBottom:12}},
@@ -529,7 +550,7 @@ function ToolJoiner(props){
           })
         )
       ),
-      h("div",{className:"card"},
+      h("div",{className:"card",style:{marginBottom:12}},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"使用できる行軍数"),
         h("div",{className:"list-group",style:{marginBottom:0}},
           [
