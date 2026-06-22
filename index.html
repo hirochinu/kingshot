@@ -646,7 +646,7 @@ function ToolJoiner(props){
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(3);}},"結果を見る　→")
     ),
 
-    step===3&&h("div",null,
+    step===3&&h("div",{className:"step-content"},
       h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(2);}},"‹ 各行軍設定に戻る"),
       h("div",{style:{display:"flex",gap:6,marginBottom:16}},
         [{v:"even",l:"均等配分"},{v:"biased",l:"偏り配分"},{v:"none",l:"手動確認"}].map(function(m){
