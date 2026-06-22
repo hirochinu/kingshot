@@ -24,7 +24,7 @@ input[type=number]:focus{outline:none}
 .iw .sfx{font-size:13px;color:#8e8e93;padding:0 12px 0 0;white-space:nowrap}
 .btn{width:100%;padding:14px 0;border-radius:14px;background:#007aff;border:none;color:#fff;font-weight:600;font-size:16px;cursor:pointer;font-family:inherit;margin-top:14px;box-shadow:0 4px 14px rgba(0,122,255,.32)}
 .btn-gray{background:#8e8e93;box-shadow:none}
-.btn-back{background:rgba(255,255,255,.95);border:none;color:#007aff;font-size:15px;cursor:pointer;font-family:inherit;padding:8px 0;margin-bottom:0;display:flex;align-items:center;gap:4px;font-weight:500;position:sticky;top:0;left:0;right:0;z-index:1000;padding-left:16px;padding-right:16px}
+
 .menu-btn{padding:18px 20px;border-radius:16px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:16px;width:100%;border:none}
 .paste-box{width:100%;min-height:96px;padding:12px;border:2px dashed rgba(0,122,255,.3);border-radius:12px;font-size:13px;font-family:inherit;color:#000;background:rgba(0,122,255,.04);resize:vertical;outline:none;line-height:1.7}
 .paste-box:focus{outline:2px solid #007aff}
@@ -264,16 +264,14 @@ function ToolHost(props){
   var hasAll=vIA>0&&vIL>0&&vCA>0&&vCL>0&&vAA>0&&vAL>0;
   var conic="conic-gradient("+IC.inf+" 0% "+opt.inf+"%, "+IC.cav+" "+opt.inf+"% "+(opt.inf+opt.cav)+"%, "+IC.arc+" "+(opt.inf+opt.cav)+"% 100%)";
 
-  return h("div",null,
-    h("button",{className:"btn-back",onClick:onBack},"‹ メニューに戻る"),
+  return h("div",null
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"集結用の最適兵割合"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"ボーナス詳細のステータスから最適な兵種比率を計算します")
     ),
     h(Stepper,{step:step,labels:["ステータス入力","兵士・ローザ","結果"]}),
 
-    step===0&&h("div",{className:"step-content"},
-      h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(-1);}},"‹ メニューに戻る"),
+    step===0&&h("div",{className:"step-content"}
       h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:4}},"ボーナス詳細ステータス"),
       h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:8,lineHeight:1.6}},"熊集結主に使う英雄で野獣狩りをした戦闘の結果メール（最下部のボーナス詳細）から入力してください。"),
       h("div",{className:"card"},
@@ -295,8 +293,7 @@ function ToolHost(props){
       )
     ),
 
-    step===1&&h("div",{className:"step-content"},
-      h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(0);}},"‹ 入力に戻る"),
+    step===1&&h("div",{className:"step-content"}
       h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"出征兵士の階層"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"集結に参加させる兵士の階層を選んでください。"),
@@ -328,8 +325,7 @@ function ToolHost(props){
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：結果を見る　→")
     ),
 
-    step===2&&h("div",{className:"step-content"},
-      h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(1);}},"‹ 兵士・ローザ設定に戻る"),
+    step===2&&h("div",{className:"step-content"}
       h("div",{className:"card-hi"},
         h("p",{className:"sec"},"最適な兵種比率"),
         h("div",{style:{display:"flex",alignItems:"center",gap:20,marginBottom:20}},
@@ -446,8 +442,7 @@ function ToolJoiner(props){
     return {results:results,left:left};
   },[nI,nC,nA,march,mSz,mIP,mCP,mode,villaLv,petLv]);
 
-  return h("div",null,
-    h("button",{className:"btn-back",onClick:onBack},"‹ メニューに戻る"),
+  return h("div",null
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"ジョイナーの兵配分"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"手持ち兵士を各行軍にどう配分するか算出します")
@@ -518,8 +513,7 @@ function ToolJoiner(props){
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：行軍設定　→")
     ),
 
-    step===1&&h("div",null,
-      h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(0);}},"‹ 保有数に戻る"),
+    step===1&&h("div",null
       h("div",{className:"card",style:{marginBottom:12}},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
@@ -582,8 +576,7 @@ function ToolJoiner(props){
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：各行軍の設定　→")
     ),
 
-    step===2&&h("div",null,
-      h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(1);}},"‹ 行軍設定に戻る"),
+    step===2&&h("div",null
       h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"各行軍の設定"),
       [].concat(Array.apply(null,Array(march))).map(function(_,i){
         var pI=Math.min(100,Math.max(0,parseInt(mIP[i])||0));
@@ -648,8 +641,7 @@ function ToolJoiner(props){
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(3);}},"結果を見る　→")
     ),
 
-    step===3&&h("div",{className:"step-content"},
-      h("button",{className:"btn-back",onClick:function(){window.scrollTo(0,0),setStep(2);}},"‹ 各行軍設定に戻る"),
+    step===3&&h("div",{className:"step-content"}
       h("div",{style:{display:"flex",gap:6,marginBottom:16}},
         [{v:"even",l:"均等配分"},{v:"biased",l:"偏り配分"},{v:"none",l:"手動確認"}].map(function(m){
           var on=mode===m.v;
@@ -760,8 +752,7 @@ function GuideHost(props){
     {s:"S5",inf:"龍飛",cav:"スルード",arc:"ビビアン"},
     {s:"S6",inf:"トリトン",cav:"ソフィア",arc:"ヤン"}
   ];
-  return h("div",null,
-    h("button",{className:"btn-back",onClick:onBack},"‹ メニューに戻る"),
+  return h("div",null
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結主（ホスト）ガイド"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"集結を立てる人のための基本知識")
@@ -911,8 +902,7 @@ function GuideJoiner(props){
     {rank:6,name:"Wee & Woo（弓・S7）",skill:"攻撃+15%・致死+10%",type:"攻撃系",note:"無課金で入手可（ルーレット）。S7以降の候補"}
   ];
   var NG=["ゴードン","ファハド","ハワード"];
-  return h("div",null,
-    h("button",{className:"btn-back",onClick:onBack},"‹ メニューに戻る"),
+  return h("div",null
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊ジョイナー 左英雄指定ガイド"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"初心者向け・熊集結ジョイナーの基本知識")
