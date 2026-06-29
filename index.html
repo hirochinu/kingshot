@@ -230,6 +230,8 @@ function PasteBonus(props){
 
 function ToolHost(props){
   var onBack=props.onBack;
+  React.useEffect(function(){window.history.pushState({tool:"host"},"","#host");},[]);
+  React.useEffect(function(){var handlePopstate=function(){onBack();};window.addEventListener("popstate",handlePopstate);return function(){window.removeEventListener("popstate",handlePopstate);};},[onBack]);
   var ss=useState(0);var step=ss[0],setStep=ss[1];
   var s1=useState(""),s2=useState(""),s3=useState(""),s4=useState(""),s5=useState(""),s6=useState("");
   var infAtk=s1[0],setIA=s1[1],infLet=s2[0],setIL=s2[1];
