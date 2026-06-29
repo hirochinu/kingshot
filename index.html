@@ -199,7 +199,7 @@ function PasteBonus(props){
     {key:"cavAtk",lb:"騎兵ATK",col:IC.cav,bg:IB.cav},{key:"cavLet",lb:"騎兵殺傷",col:IC.cav,bg:IB.cav},
     {key:"arcAtk",lb:"弓兵ATK",col:IC.arc,bg:IB.arc},{key:"arcLet",lb:"弓兵殺傷",col:IC.arc,bg:IB.arc}
   ];
-  return h("div",null,
+  return h("div",{style:{paddingBottom:80}},
     h("div",{style:{background:"rgba(0,122,255,.07)",borderRadius:14,padding:"14px 16px",marginBottom:12}},
       h("p",{style:{fontSize:13,fontWeight:600,color:"#007aff",marginBottom:10}},"📋 テキストの取得方法"),
       h(GuideAccordion,{label:"iOS",color:"#007aff",steps:[
@@ -264,10 +264,8 @@ function ToolHost(props){
   var hasAll=vIA>0&&vIL>0&&vCA>0&&vCL>0&&vAA>0&&vAL>0;
   var conic="conic-gradient("+IC.inf+" 0% "+opt.inf+"%, "+IC.cav+" "+opt.inf+"% "+(opt.inf+opt.cav)+"%, "+IC.arc+" "+(opt.inf+opt.cav)+"% 100%)";
 
-  return h("div",null,
-  h("div",{style:{position:"fixed",top:0,left:0,right:0,zIndex:999,background:"#fff",borderBottom:"1px solid #f0f0f0",padding:"8px 16px",fontSize:12,textAlign:"left"}},
-      h("button",{style:{background:"none",border:"none",color:"#007aff",cursor:"pointer",fontSize:12,padding:0,fontFamily:"inherit"},onClick:onBack},"← TOP")
-    ),
+  return h("div",{style:{paddingBottom:80}},
+  
     
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"集結用の最適兵割合"),
@@ -446,10 +444,8 @@ function ToolJoiner(props){
     return {results:results,left:left};
   },[nI,nC,nA,march,mSz,mIP,mCP,mode,villaLv,petLv]);
 
-  return h("div",null,
-  h("div",{style:{position:"fixed",top:0,left:0,right:0,zIndex:999,background:"#fff",borderBottom:"1px solid #f0f0f0",padding:"8px 16px",fontSize:12,textAlign:"left"}},
-      h("button",{style:{background:"none",border:"none",color:"#007aff",cursor:"pointer",fontSize:12,padding:0,fontFamily:"inherit"},onClick:onBack},"← TOP")
-    ),
+  return h("div",{style:{paddingBottom:80}},
+  
     
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"ジョイナーの兵配分"),
@@ -457,7 +453,7 @@ function ToolJoiner(props){
     ),
     h(Stepper,{step:step,setStep:setStep,labels:["兵士数入力","行軍設定","各行軍","結果"]}),
 
-    step===0&&h("div",{style:{paddingTop:48},className:"step-content"},
+    step===0&&h("div",{className:"step-content"},
       h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:4}},"保有兵士数"),
       h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:8,lineHeight:1.6}},"部隊一覧からコピーしたテキストまたは手動で兵士数を入力してください。"),
       h("div",{className:"card"},
@@ -665,7 +661,7 @@ function ToolJoiner(props){
         var totI=0,totC=0,totA=0;
         if(calcResult) calcResult.results.forEach(function(r){if(r){totI+=r.inf;totC+=r.cav;totA+=r.arc;}});
         var hasShortage=nI<totI||nC<totC||nA<totA;
-        return h("div",null,
+        return h("div",{style:{paddingBottom:80}},
           calcResult&&calcResult.results.map(function(res,i){
             if(!res) return null;
             return h("div",{key:i,className:"card",style:{marginBottom:8}},
@@ -760,7 +756,7 @@ function GuideHost(props){
     {s:"S5",inf:"龍飛",cav:"スルード",arc:"ビビアン"},
     {s:"S6",inf:"トリトン",cav:"ソフィア",arc:"ヤン"}
   ];
-  return h("div",null,
+  return h("div",{style:{paddingBottom:80}},
     
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結主（ホスト）ガイド"),
@@ -911,7 +907,7 @@ function GuideJoiner(props){
     {rank:6,name:"Wee & Woo（弓・S7）",skill:"攻撃+15%・致死+10%",type:"攻撃系",note:"無課金で入手可（ルーレット）。S7以降の候補"}
   ];
   var NG=["ゴードン","ファハド","ハワード"];
-  return h("div",null,
+  return h("div",{style:{paddingBottom:80}},
     
     h("div",{style:{marginBottom:20}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊ジョイナー 左英雄指定ガイド"),
