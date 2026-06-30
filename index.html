@@ -285,8 +285,8 @@ function ToolHost(props){
           return h("div",{key:row.lb,style:{marginBottom:14}},
             h("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:8}},h("span",null,row.em),h("span",{style:{fontSize:15,fontWeight:600,color:row.col}},row.lb)),
             h("div",{style:{display:"grid",gridTemplateColumns:"minmax(0,1fr) minmax(0,1fr)",gap:8}},
-              h("div",null,h("p",{className:"fl"},"攻撃力"),h("div",{className:"iw"},h("input",{type:"number",value:row.atk,placeholder:"537",onChange:function(ev){row.setA(ev.target.value);},style:{color:row.col}}),h("span",{className:"sfx"},"%"))),
-              h("div",null,h("p",{className:"fl"},"殺傷力"),h("div",{className:"iw"},h("input",{type:"number",value:row.lt,placeholder:"368",onChange:function(ev){row.setL(ev.target.value);},style:{color:row.col}}),h("span",{className:"sfx"},"%")))
+              h("div",null,h("p",{className:"fl"},"攻撃力"),h("div",{className:"iw"},h("input",{type:"number",value:row.atk,placeholder:"",onChange:function(ev){row.setA(ev.target.value);},style:{color:row.col}}),h("span",{className:"sfx"},"%"))),
+              h("div",null,h("p",{className:"fl"},"殺傷力"),h("div",{className:"iw"},h("input",{type:"number",value:row.lt,placeholder:"",onChange:function(ev){row.setL(ev.target.value);},style:{color:row.col}}),h("span",{className:"sfx"},"%")))
             )
           );
         }),
