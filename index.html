@@ -494,7 +494,7 @@ function ToolHost(props){
 
     step===0&&h("div",{className:"step-content"},
       h("p",{className:"sec"},"ボーナス詳細ステータス"),
-      h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:8,lineHeight:1.6}},"熊集結主に使う英雄で野獣狩りをした戦闘の結果メール（最下部のボーナス詳細）から入力してください。"),
+      h("p",{className:"text-sub" style:{marginBottom:8,lineHeight:1.6}},"熊集結主に使う英雄で野獣狩りをした戦闘の結果メール（最下部のボーナス詳細）から入力してください。"),
       h("div",{className:"card"},
         h("p",{className:"sec"},"テキスト貼り付けで自動入力"),
         h(PasteBonus,{onResult:applyParsed}),
@@ -517,7 +517,7 @@ function ToolHost(props){
     step===1&&h("div",{className:"step-content"},
       h("div",{className:"card"},
         h("p",{className:"sec"},"出征兵士の階層"),
-        h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"集結に参加させる兵士の階層を選んでください。"),
+        h("p",{className:"text-sub" style:{marginBottom:12,lineHeight:1.5}},"集結に参加させる兵士の階層を選んでください。"),
         h("div",{style:{background:"rgba(255,149,0,.08)",borderRadius:12,padding:"10px 12px",marginBottom:12,fontSize:12,color:"#9a5f00",lineHeight:1.6}},"💡 下記で設定したペット・学院のボーナスはツール側で自動加算されます。"),
         h("div",{className:"list-group"},
           TIERS.map(function(t){
@@ -529,7 +529,7 @@ function ToolHost(props){
           })
         ),
         h("p",{className:"sec"},"ローザの遠征スキル「ゴールデン・リズム」"),
-        h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.6}},"ローザを集結主に使用している場合のみ設定してください。弓兵ATKが強化されるため最適な兵種比率が変わります。"),
+        h("p",{className:"text-sub" style:{marginBottom:12,lineHeight:1.6}},"ローザを集結主に使用している場合のみ設定してください。弓兵ATKが強化されるため最適な兵種比率が変わります。"),
         h("div",{className:"list-group"},
           ROSA_LIST.map(function(r){
             var on=rosa===r.lv;
