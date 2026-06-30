@@ -23,7 +23,7 @@ input[type=number]:focus{outline:none}
 .btn{width:100%;padding:14px 0;border-radius:14px;background:#007aff;border:none;color:#fff;font-weight:600;font-size:16px;cursor:pointer;font-family:inherit;margin-top:8px;box-shadow:0 4px 14px rgba(0,122,255,.32)}
 .btn-gray{background:#8e8e93;box-shadow:none}
 
-.menu-btn{padding:18px 20px;border-radius:16px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:16px;width:100%;border:none}
+.menu-btn{padding:18px 20px;border-radius:16px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:12px;width:100%;border:none}
 .paste-box{width:100%;min-height:96px;padding:12px;border:2px dashed rgba(0,122,255,.3);border-radius:12px;font-size:13px;font-family:inherit;color:#000;background:rgba(0,122,255,.04);resize:vertical;outline:none;line-height:1.7}
 .paste-box:focus{outline:2px solid #007aff}
 .paste-box::placeholder{color:#8e8e93}
@@ -249,12 +249,13 @@ function ToolHost(props){
   var ss=useState(0);var step=ss[0],setStep=ss[1];
   var st=useState({infAtk:"",infLet:"",cavAtk:"",cavLet:"",arcAtk:"",arcLet:""});
   var troops=st[0],setTroops=st[1];
-  var infAtk=troops.infAtk,setIA=function(v){setTroops(Object.assign({},troops,{infAtk:v}));};
-  var infLet=troops.infLet,setIL=function(v){setTroops(Object.assign({},troops,{infLet:v}));};
-  var cavAtk=troops.cavAtk,setCA=function(v){setTroops(Object.assign({},troops,{cavAtk:v}));};
-  var cavLet=troops.cavLet,setCL=function(v){setTroops(Object.assign({},troops,{cavLet:v}));};
-  var arcAtk=troops.arcAtk,setAA=function(v){setTroops(Object.assign({},troops,{arcAtk:v}));};
-  var arcLet=troops.arcLet,setAL=function(v){setTroops(Object.assign({},troops,{arcLet:v}));};
+  var upT=function(k,v){setTroops(Object.assign({},troops,{[k]:v}));};
+  var infAtk=troops.infAtk,setIA=function(v){upT("infAtk",v);};
+  var infLet=troops.infLet,setIL=function(v){upT("infLet",v);};
+  var cavAtk=troops.cavAtk,setCA=function(v){upT("cavAtk",v);};
+  var cavLet=troops.cavLet,setCL=function(v){upT("cavLet",v);};
+  var arcAtk=troops.arcAtk,setAA=function(v){upT("arcAtk",v);};
+  var arcLet=troops.arcLet,setAL=function(v){upT("arcLet",v);};
   var st=useState("tg3tg4"),sr=useState(0);
   var tier=st[0],setTier=st[1],rosa=sr[0],setRosa=sr[1];
   var curT=TIERS.find(function(t){return t.v===tier;})||TIERS[0];
