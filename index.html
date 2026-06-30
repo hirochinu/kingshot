@@ -214,6 +214,36 @@ input[type=number]:focus{outline:none}
 
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .step-content{animation:fadeIn 1.2s ease-in;padding-top:var(--spacing-lg)}
+
+/* Layout Classes */
+.flex-row{display:flex;align-items:center;gap:var(--spacing-md)}
+.flex-col{display:flex;flex-direction:column;gap:var(--spacing-md)}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-sm)}
+
+/* Spacing Classes */
+.mb-xs{margin-bottom:var(--spacing-xs)}
+.mb-sm{margin-bottom:var(--spacing-sm)}
+.mb-md{margin-bottom:var(--spacing-md)}
+.mb-lg{margin-bottom:var(--spacing-lg)}
+.mt-md{margin-top:var(--spacing-md)}
+.mt-lg{margin-top:var(--spacing-lg)}
+
+/* Text Classes */
+.text-body{font-size:15px;font-weight:500;color:var(--text-primary)}
+.text-label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+.text-sub{font-size:13px;color:var(--text-tertiary)}
+.text-bold{font-weight:600}
+.text-muted{color:var(--text-tertiary)}
+
+/* Size Classes */
+.w-full{width:100%}
+.radius-sm{border-radius:var(--radius-sm)}
+.radius-md{border-radius:var(--radius-md)}
+
+/* Shrink */
+.flex-shrink-0{flex-shrink:0}
 </style>
 </head>
 <body>
@@ -326,8 +356,8 @@ function GuideAccordion(props){
   var label=props.label,steps=props.steps,color=props.color||"#007aff";
   var so=React.useState(false);var open=so[0],setOpen=so[1];
   return h("div",{style:{marginBottom:8}},
-    h("div",{onClick:function(){setOpen(!open);},style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",borderRadius:open?"12px 12px 0 0":12,background:"rgba(118,118,128,.1)",cursor:"pointer"}},
-      h("div",{style:{display:"flex",alignItems:"center",gap:8}},
+    h("div",{onClick:function(){setOpen(!open);},className:"flex-between"},
+      h("div",{className:"flex-row"},
         h("div",{style:{width:10,height:10,borderRadius:"50%",background:color,flexShrink:0}}),
         h("span",{style:{fontSize:13,fontWeight:600,color:"#000"}},label)
       ),
@@ -533,7 +563,7 @@ function ToolHost(props){
              {lb:"弓兵",em:"🏹",val:opt.arc,col:IC.arc,bg:IB.arc}
             ].map(function(d){
               return h("div",{key:d.lb},
-                h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}},
+                h("div",{className:"flex-between"},
                   h("div",{style:{display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#6e6e73"}},h("div",{style:{width:10,height:10,borderRadius:"50%",background:d.col,flexShrink:0}}),d.em," ",d.lb),
                   h("span",{style:{fontSize:22,fontWeight:700,color:d.col}},d.val,h("span",{style:{fontSize:13,fontWeight:400}},"%"))
                 ),
@@ -546,7 +576,7 @@ function ToolHost(props){
         h("p",{className:"sec"},"効率スコア"),
         [{lb:"🛡️ 歩兵",note:"×⅓",w:calc.wI,col:IC.inf},{lb:"🐎 騎兵",note:"×1",w:calc.wC,col:IC.cav},{lb:"🏹 弓兵",note:"×4/3",w:calc.wA,col:IC.arc}].map(function(row){
           return h("div",{key:row.lb},
-            h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}},h("span",null,row.lb," ",h("span",{style:{fontSize:11,color:"#8e8e93"}},row.note)),h("span",{style:{fontWeight:600,color:row.col}},row.w.toFixed(3))),
+            h("div",{className:"flex-between"},h("span",null,row.lb," ",h("span",{style:{fontSize:11,color:"#8e8e93"}},row.note)),h("span",{style:{fontWeight:600,color:row.col}},row.w.toFixed(3))),
             h("div",{style:{height:5,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden"}},h("div",{style:{width:(row.w/calc.maxW*100)+"%",height:"100%",background:row.col,borderRadius:99}}))
           );
         }),
@@ -688,15 +718,15 @@ function ToolJoiner(props){
         h("div",{className:"sep"}),
         h("p",{className:"sec"},"手動入力 / 確認・修正"),
         h("div",{style:{display:"flex",flexDirection:"column",gap:10}},
-          h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+          h("div",{className:"flex-row"},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.inf,width:64,flexShrink:0}},"🛡️ 歩兵"),
             h("div",{className:"iw",style:{flex:1}},h("input",{type:"number",value:oI,placeholder:"0",onChange:function(ev){setOI(ev.target.value);}}),h("span",{className:"sfx"},"人"))
           ),
-          h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+          h("div",{className:"flex-row"},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.cav,width:64,flexShrink:0}},"🐎 騎兵"),
             h("div",{className:"iw",style:{flex:1}},h("input",{type:"number",value:oC,placeholder:"0",onChange:function(ev){setOC(ev.target.value);}}),h("span",{className:"sfx"},"人"))
           ),
-          h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+          h("div",{className:"flex-row"},
             h("span",{style:{fontSize:13,fontWeight:600,color:IC.arc,width:64,flexShrink:0}},"🏹 弓兵"),
             h("div",{className:"iw",style:{flex:1}},h("input",{type:"number",value:oA,placeholder:"0",onChange:function(ev){setOA(ev.target.value);}}),h("span",{className:"sfx"},"人"))
           ),
@@ -718,7 +748,7 @@ function ToolJoiner(props){
             var on=petLv===lv;
             return h("div",{key:lv,className:"list-row"+(on?" on":""),
               onClick:(function(v){return function(){setPetLv(v);};})(lv),
-              style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
+              className:"flex-between"},
               h("span",{style:{fontSize:15,color:"#000"}},lv===0?"なし（未習得）":"Lv "+lv),
               h("div",{style:{display:"flex",alignItems:"center",gap:10}},
                 lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(RAGING_BEAST_BONUSES[lv]).toLocaleString()+"人"),
@@ -734,7 +764,7 @@ function ToolJoiner(props){
             var on=villaLv===lv;
             return h("div",{key:lv,className:"list-row"+(on?" on":""),
               onClick:(function(v){return function(){setVillaLv(v);};})(lv),
-              style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
+              className:"flex-between"},
               h("span",{style:{fontSize:15,color:"#000"}},lv===0?"なし（スキルなし）":"Lv "+lv),
               h("div",{style:{display:"flex",alignItems:"center",gap:10}},
                 lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(lv*3000).toLocaleString()+"人"),
@@ -759,7 +789,7 @@ function ToolJoiner(props){
             var on=march===m.v;
             return h("div",{key:m.v,onClick:(function(v){return function(){setMarch(v);};})(m.v),
               className:"list-row"+(on?" on":""),
-              style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
+              className:"flex-between"},
               h("span",{style:{fontSize:15,color:"#000"}},m.l),
               h("div",{style:{display:"flex",alignItems:"center",gap:10}},
                 h("span",{style:{fontSize:12,color:"#8e8e93"}},m.s),
@@ -798,7 +828,7 @@ function ToolJoiner(props){
           ),
           h("p",{className:"fl"},"兵種の割合"),
           h("div",{style:{display:"flex",flexDirection:"column",gap:8}},
-            h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+            h("div",{className:"flex-row"},
               h("span",{style:{fontSize:13,fontWeight:600,color:IC.inf,width:64,flexShrink:0}},"🛡️ 歩兵%"),
               h("div",{className:"iw",style:{flex:1}},
                 h("input",{type:"number",value:mIP[i],placeholder:"—",min:0,max:100,
@@ -812,7 +842,7 @@ function ToolJoiner(props){
                 h("span",{className:"sfx"},"%")
               )
             ),
-            h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+            h("div",{className:"flex-row"},
               h("span",{style:{fontSize:13,fontWeight:600,color:IC.cav,width:64,flexShrink:0}},"🐎 騎兵%"),
               h("div",{className:"iw",style:{flex:1}},
                 h("input",{type:"number",value:mCP[i],placeholder:"—",min:0,max:100,
@@ -826,7 +856,7 @@ function ToolJoiner(props){
                 h("span",{className:"sfx"},"%")
               )
             ),
-            entered&&h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+            entered&&h("div",{className:"flex-row"},
               h("span",{style:{fontSize:13,fontWeight:600,color:IC.arc,width:64,flexShrink:0}},"🏹 弓兵%"),
               h("div",{style:{flex:1,padding:"10px 12px",borderRadius:10,background:IB.arc,fontSize:15,fontWeight:600,color:IC.arc}},Math.max(0,100-pI-pC)+"% （自動）")
             )
@@ -857,7 +887,7 @@ function ToolJoiner(props){
           calcResult&&calcResult.results.map(function(res,i){
             if(!res) return null;
             return h("div",{key:i,className:"card"},
-              h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
+              h("div",{className:"flex-between"},
                 h("p",{style:{fontSize:15,fontWeight:600}},ML[i]),
                 h("div",{style:{fontSize:13,color:hasShortage?"#ff3b30":"#34c759",fontWeight:600}},
                   hasShortage?"▼ 保有数不足":"✓ 保有数OK"
@@ -885,7 +915,7 @@ function ToolJoiner(props){
                   var greenPct=t.totalNeed>0?Math.min(99,Math.round(t.have/t.totalNeed*100)):100;
                   var lack=t.totalNeed-t.have;
                   return h("div",{key:t.lb},
-                    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}},
+                    h("div",{className:"flex-between"},
                       h("span",{style:{fontSize:13,color:t.col,fontWeight:600}},t.em+" "+t.lb),
                       h("div",{style:{textAlign:"right"}},
                         h("div",{style:{fontSize:14,fontWeight:700,color:ok?"#34c759":"#ff3b30"}},
@@ -1216,7 +1246,7 @@ function App(){
     h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"集結主"),
     h("div",{className:"list-group"},
       h("div",{className:"list-row",onClick:function(){setMode("host");}},
-        h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"🎯"),
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊集結主 兵士算出ツール"),
@@ -1226,7 +1256,7 @@ function App(){
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
       ),
       h("div",{className:"list-row",onClick:function(){setMode("guide-host");}},
-        h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"📖"),
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊集結主ガイド"),
@@ -1239,7 +1269,7 @@ function App(){
     h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"ジョイナー"),
     h("div",{className:"list-group"},
       h("div",{className:"list-row",onClick:function(){setMode("joiner");}},
-        h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"🗡️"),
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊ジョイナー 兵士算出ツール"),
@@ -1249,7 +1279,7 @@ function App(){
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
       ),
       h("div",{className:"list-row",onClick:function(){setMode("guide-joiner");}},
-        h("div",{style:{display:"flex",alignItems:"center",gap:12}},
+        h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"📖"),
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊ジョイナーガイド"),
