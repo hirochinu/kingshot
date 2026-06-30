@@ -340,7 +340,7 @@ function GuideAccordion(props){
           h("div",null,
             h("div",{className:"guide-text"},g.t),
             g.s&&h("div",{className:"guide-sub"},g.s),
-            g.link&&h("a",{href:g.link.href,target:"_blank",rel:"noopener",style:{display:"inline-block",marginTop:4,fontSize:12,color:color,fontWeight:600}},g.link.label+" →")
+            g.link&&h("a",{href:g.link.href,target:"_blank",rel:"noopener"},g.link.label+" →")
           )
         );
       })
@@ -471,7 +471,7 @@ function ToolHost(props){
         h("div",{className:"sep"}),
         h("p",{className:"sec"},"手動入力 / 確認・修正"),
         troops.map(function(row){
-          return h("div",{key:row.lb,style:{marginBottom:14}},
+          return h("div",{key:row.lb},
             h("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:8}},h("span",null,row.em),h("span",{style:{fontSize:15,fontWeight:600,color:row.col}},row.lb)),
             h("div",{style:{display:"grid",gridTemplateColumns:"minmax(0,1fr) minmax(0,1fr)",gap:8}},
               h("div",null,h("p",{className:"fl"},"攻撃力"),h("div",{className:"iw"},h("input",{type:"number",value:row.atk,placeholder:"",onChange:function(ev){row.setA(ev.target.value);},style:{color:row.col}}),h("span",{className:"sfx"},"%"))),
@@ -489,7 +489,7 @@ function ToolHost(props){
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:8}},"出征兵士の階層"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"集結に参加させる兵士の階層を選んでください。"),
         h("div",{style:{background:"rgba(255,149,0,.08)",borderRadius:12,padding:"10px 12px",marginBottom:12,fontSize:12,color:"#9a5f00",lineHeight:1.6}},"💡 下記で設定したペット・学院のボーナスはツール側で自動加算されます。"),
-        h("div",{className:"list-group",style:{marginBottom:16}},
+        h("div",{className:"list-group"},
           TIERS.map(function(t){
             var on=tier===t.v;
             return h("div",{key:t.v,className:"list-row"+(on?" on":""),onClick:(function(v){return function(){setTier(v);};})(t.v)},
@@ -500,7 +500,7 @@ function ToolHost(props){
         ),
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:6}},"ローザの遠征スキル「ゴールデン・リズム」"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.6}},"ローザを集結主に使用している場合のみ設定してください。弓兵ATKが強化されるため最適な兵種比率が変わります。"),
-        h("div",{className:"list-group",style:{marginBottom:0}},
+        h("div",{className:"list-group"},
           ROSA_LIST.map(function(r){
             var on=rosa===r.lv;
             return h("div",{key:r.lv,className:"list-row"+(on?" on":""),onClick:(function(lv){return function(){setRosa(lv);};})(r.lv)},
@@ -545,7 +545,7 @@ function ToolHost(props){
         h("div",{className:"sep"}),
         h("p",{className:"sec"},"効率スコア"),
         [{lb:"🛡️ 歩兵",note:"×⅓",w:calc.wI,col:IC.inf},{lb:"🐎 騎兵",note:"×1",w:calc.wC,col:IC.cav},{lb:"🏹 弓兵",note:"×4/3",w:calc.wA,col:IC.arc}].map(function(row){
-          return h("div",{key:row.lb,style:{marginBottom:10}},
+          return h("div",{key:row.lb},
             h("div",{style:{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:4}},h("span",null,row.lb," ",h("span",{style:{fontSize:11,color:"#8e8e93"}},row.note)),h("span",{style:{fontWeight:600,color:row.col}},row.w.toFixed(3))),
             h("div",{style:{height:5,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden"}},h("div",{style:{width:(row.w/calc.maxW*100)+"%",height:"100%",background:row.col,borderRadius:99}}))
           );
@@ -553,7 +553,7 @@ function ToolHost(props){
         h("div",{style:{marginTop:12,padding:"12px 14px",borderRadius:12,background:"rgba(255,149,0,.1)",fontSize:13,color:"#9a5f00",lineHeight:1.7}},
           "💡 この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。"
         ),
-        h("button",{className:"btn btn-gray",onClick:function(){window.scrollTo(0,0),setStep(0);}},"最初からやり直す"),
+        h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(0);}},"最初からやり直す"),
       h("div",{style:{position:"fixed",bottom:0,left:0,right:0,zIndex:999,background:"#fff",borderTop:"1px solid #f0f0f0",padding:"12px"}},
       h("button",{style:{width:"100%",padding:"14px 0",background:"#007aff",color:"#fff",border:"none",borderRadius:12,fontSize:16,fontWeight:600,cursor:"pointer",fontFamily:"inherit"},onClick:onBack},"← メニューに戻る")
     )
@@ -710,10 +710,10 @@ function ToolJoiner(props){
     ),
 
     step===1&&h("div",null,
-      h("div",{className:"card",style:{marginBottom:12}},
+      h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
-        h("div",{className:"list-group",style:{marginBottom:12}},
+        h("div",{className:"list-group"},
           [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
             var on=petLv===lv;
             return h("div",{key:lv,className:"list-row"+(on?" on":""),
@@ -729,7 +729,7 @@ function ToolJoiner(props){
         ),
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"マスター学院「人数優位」Lv"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:10,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
-        h("div",{className:"list-group",style:{marginBottom:0}},
+        h("div",{className:"list-group"},
           [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
             var on=villaLv===lv;
             return h("div",{key:lv,className:"list-row"+(on?" on":""),
@@ -744,9 +744,9 @@ function ToolJoiner(props){
           })
         )
       ),
-      h("div",{className:"card",style:{marginBottom:12}},
+      h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:10}},"使用できる行軍数"),
-        h("div",{className:"list-group",style:{marginBottom:0}},
+        h("div",{className:"list-group"},
           [
             {v:1,l:"自集結のみ",s:"行軍なし"},
             {v:2,l:"自集結 ＋ 行軍①",s:"計2部隊"},
@@ -779,7 +779,7 @@ function ToolJoiner(props){
         var pC=Math.min(100,Math.max(0,parseInt(mCP[i])||0));
         var entered=mIP[i]!==""||mCP[i]!=="";
         var over=entered&&pI+pC>100;
-        return h("div",{key:i,className:"card",style:{marginBottom:8}},
+        return h("div",{key:i,className:"card"},
           h("p",{style:{fontSize:14,fontWeight:600,marginBottom:12}},ML[i]),
           h("div",{style:{marginBottom:12}},
             h("p",{className:"fl"},"出征容量"),
@@ -796,7 +796,7 @@ function ToolJoiner(props){
               };})(i)
             }),h("span",{className:"sfx"},"人"))
           ),
-          h("p",{className:"fl",style:{marginBottom:8}},"兵種の割合"),
+          h("p",{className:"fl"},"兵種の割合"),
           h("div",{style:{display:"flex",flexDirection:"column",gap:8}},
             h("div",{style:{display:"flex",alignItems:"center",gap:12}},
               h("span",{style:{fontSize:13,fontWeight:600,color:IC.inf,width:64,flexShrink:0}},"🛡️ 歩兵%"),
@@ -831,7 +831,7 @@ function ToolJoiner(props){
               h("div",{style:{flex:1,padding:"10px 12px",borderRadius:10,background:IB.arc,fontSize:15,fontWeight:600,color:IC.arc}},Math.max(0,100-pI-pC)+"% （自動）")
             )
           ),
-          over&&h("div",{className:"toast toast-warn",style:{marginTop:8}},"⚠️ 歩兵＋騎兵の合計が"+(pI+pC)+"%です")
+          over&&h("div",{className:"toast toast-warn"},"⚠️ 歩兵＋騎兵の合計が"+(pI+pC)+"%です")
         );
       }),
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(3);}},"結果を見る　→")
@@ -856,7 +856,7 @@ function ToolJoiner(props){
         return h("div",{style:{paddingBottom:80}},
           calcResult&&calcResult.results.map(function(res,i){
             if(!res) return null;
-            return h("div",{key:i,className:"card",style:{marginBottom:8}},
+            return h("div",{key:i,className:"card"},
               h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
                 h("p",{style:{fontSize:15,fontWeight:600}},ML[i]),
                 h("div",{style:{fontSize:13,color:hasShortage?"#ff3b30":"#34c759",fontWeight:600}},
@@ -884,7 +884,7 @@ function ToolJoiner(props){
                   var ok=t.have>=t.totalNeed;
                   var greenPct=t.totalNeed>0?Math.min(99,Math.round(t.have/t.totalNeed*100)):100;
                   var lack=t.totalNeed-t.have;
-                  return h("div",{key:t.lb,style:{marginBottom:8}},
+                  return h("div",{key:t.lb},
                     h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}},
                       h("span",{style:{fontSize:13,color:t.col,fontWeight:600}},t.em+" "+t.lb),
                       h("div",{style:{textAlign:"right"}},
@@ -904,7 +904,7 @@ function ToolJoiner(props){
             );
           }),
           !calcResult&&h("div",{className:"toast toast-warn"},"⚠️ 保有数または出征容量が入力されていません"),
-          calcResult&&h("div",{className:"card-hi",style:{marginTop:8}},
+          calcResult&&h("div",{className:"card-hi"},
             h("p",{className:"sec"},mode==="none"?"保有数との差引き（全行軍合計）":"配分後の残り兵士"),
             h("div",{style:{display:"flex",gap:8}},
               [{em:"🛡️",lb:"歩兵",n:calcResult.left.inf,col:IC.inf,bg:IB.inf},
@@ -924,7 +924,7 @@ function ToolJoiner(props){
               "学院Lv"+villaLv+"：＋"+(villaLv*3000).toLocaleString()+"人"
             )
           ),
-          h("button",{className:"btn btn-gray",style:{marginTop:8},onClick:function(){window.scrollTo(0,0),setStep(0);}},"最初からやり直す")
+          h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(0);}},"最初からやり直す")
         );
       })()
     )
@@ -1172,7 +1172,7 @@ function GuideJoiner(props){
         "星は☆4まで（Lv5の上限解放に必要）。☆5・装備・他スキルはジョイナー性能に影響なし。",
         "ここだけ投資すれば誰でも一流ジョイナーになれる、コスパ最高の強化ポイント。"
       ].map(function(line,i){
-        return h("div",{key:i,style:{display:"flex",gap:10,marginBottom:8,alignItems:"flex-start"}},
+        return h("div",{key:i},
           h("span",{style:{color:"#34c759",fontSize:16,flexShrink:0,lineHeight:1.4}},"✓"),
           h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.7}},line)
         );
@@ -1214,7 +1214,7 @@ function App(){
 
     h("p",{style:{fontSize:12,fontWeight:600,color:"#6e6e73",marginBottom:8,letterSpacing:".04em"}},"🐻 巨熊狩猟"),
     h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"集結主"),
-    h("div",{className:"list-group",style:{marginBottom:16}},
+    h("div",{className:"list-group"},
       h("div",{className:"list-row",onClick:function(){setMode("host");}},
         h("div",{style:{display:"flex",alignItems:"center",gap:12}},
           h("span",{style:{fontSize:22}},"🎯"),
@@ -1237,7 +1237,7 @@ function App(){
       )
     ),
     h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"ジョイナー"),
-    h("div",{className:"list-group",style:{marginBottom:20}},
+    h("div",{className:"list-group"},
       h("div",{className:"list-row",onClick:function(){setMode("joiner");}},
         h("div",{style:{display:"flex",alignItems:"center",gap:12}},
           h("span",{style:{fontSize:22}},"🗡️"),
