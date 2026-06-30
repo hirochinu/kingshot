@@ -94,6 +94,20 @@ function findOpt(wI,wC,wA){
   return {inf:inf,cav:cav,arc:arc};
 }
 
+
+function parseKeyValues(txt,keys){
+  if(!txt)return {};var result={};var lines=(txt||"").split("\n");
+  lines.forEach(function(line){
+    var parts=line.split(/[:\s]+/);
+    if(parts.length>=2){
+      keys.forEach(function(k){
+        if(parts[0].includes(k.label)){result[k.key]=parseFloat(parts[1]);}
+      });
+    }
+  });
+  return result;
+}
+
 function parseBonus(txt){
   var res={};
   var km={"歩兵攻撃力":"infAtk","歩兵攻擊力":"infAtk","歩兵殺傷力":"infLet","騎兵攻撃力":"cavAtk","騎兵攻擊力":"cavAtk","騎兵殺傷力":"cavLet","弓兵攻撃力":"arcAtk","弓兵攻擊力":"arcAtk","弓兵殺傷力":"arcLet"};
@@ -233,10 +247,14 @@ function ToolHost(props){
   React.useEffect(function(){window.history.pushState({tool:"host"},"","#host");},[]);
   React.useEffect(function(){var handlePopstate=function(){onBack();};var handleHashchange=function(){var hash=window.location.hash.slice(1);if(!hash||hash==="host"){onBack();}};window.addEventListener("popstate",handlePopstate);window.addEventListener("hashchange",handleHashchange);return function(){window.removeEventListener("popstate",handlePopstate);window.removeEventListener("hashchange",handleHashchange);};},[onBack]);
   var ss=useState(0);var step=ss[0],setStep=ss[1];
-  var s1=useState(""),s2=useState(""),s3=useState(""),s4=useState(""),s5=useState(""),s6=useState("");
-  var infAtk=s1[0],setIA=s1[1],infLet=s2[0],setIL=s2[1];
-  var cavAtk=s3[0],setCA=s3[1],cavLet=s4[0],setCL=s4[1];
-  var arcAtk=s5[0],setAA=s5[1],arcLet=s6[0],setAL=s6[1];
+  var st=useState({infAtk:"",infLet:"",cavAtk:"",cavLet:"",arcAtk:"",arcLet:""});
+  var troops=st[0],setTroops=st[1];
+  var infAtk=troops.infAtk,setIA=function(v){setTroops(Object.assign({},troops,{infAtk:v}));};
+  var infLet=troops.infLet,setIL=function(v){setTroops(Object.assign({},troops,{infLet:v}));};
+  var cavAtk=troops.cavAtk,setCA=function(v){setTroops(Object.assign({},troops,{cavAtk:v}));};
+  var cavLet=troops.cavLet,setCL=function(v){setTroops(Object.assign({},troops,{cavLet:v}));};
+  var arcAtk=troops.arcAtk,setAA=function(v){setTroops(Object.assign({},troops,{arcAtk:v}));};
+  var arcLet=troops.arcLet,setAL=function(v){setTroops(Object.assign({},troops,{arcLet:v}));};
   var st=useState("tg3tg4"),sr=useState(0);
   var tier=st[0],setTier=st[1],rosa=sr[0],setRosa=sr[1];
   var curT=TIERS.find(function(t){return t.v===tier;})||TIERS[0];
