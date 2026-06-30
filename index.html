@@ -488,7 +488,7 @@ function ToolJoiner(props){
 
         h("textarea",{
           className:"paste-box",
-          placeholder:"👆 ここに貼り付け\n例：切り札歩兵\n404,872\n切り札騎兵\n288,422\n切り札弓兵\n156,789",
+          placeholder:"👆 ここに貼り付け\n",
           onChange:function(e){
             var p=parseTroops(e.target.value);
             if(p.inf!=null)setOI(String(p.inf));
