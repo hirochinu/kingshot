@@ -411,7 +411,7 @@ function PasteBonus(props){
     {key:"cavAtk",lb:"騎兵ATK",col:IC.cav,bg:IB.cav},{key:"cavLet",lb:"騎兵殺傷",col:IC.cav,bg:IB.cav},
     {key:"arcAtk",lb:"弓兵ATK",col:IC.arc,bg:IB.arc},{key:"arcLet",lb:"弓兵殺傷",col:IC.arc,bg:IB.arc}
   ];
-  return h("div",{style:{paddingBottom:80}},
+  return h("div",{style:{paddingBottom:20}},
     h("div",{style:{background:"rgba(0,122,255,.07)",borderRadius:14,padding:"14px 16px",marginBottom:12}},
       h("p",{style:{fontSize:13,fontWeight:600,color:"#007aff",marginBottom:12}},"📋 テキストの取得方法"),
       h(GuideAccordion,{label:"iOS",color:"#007aff",steps:[
@@ -483,7 +483,7 @@ function ToolHost(props){
   var hasAll=vIA>0&&vIL>0&&vCA>0&&vCL>0&&vAA>0&&vAL>0;
   var conic="conic-gradient("+IC.inf+" 0% "+opt.inf+"%, "+IC.cav+" "+opt.inf+"% "+(opt.inf+opt.cav)+"%, "+IC.arc+" "+(opt.inf+opt.cav)+"% 100%)";
 
-  return h("div",{style:{paddingBottom:80}},
+  return h("div",{style:{paddingBottom:20}},
   
     
     h("div",{style:{marginBottom:16}},
@@ -666,7 +666,7 @@ function ToolJoiner(props){
     return {results:results,left:left};
   },[nI,nC,nA,march,mSz,mIP,mCP,mode,villaLv,petLv]);
 
-  return h("div",{style:{paddingBottom:80}},
+  return h("div",{style:{paddingBottom:20}},
   
     
     h("div",{style:{marginBottom:16}},
@@ -883,7 +883,7 @@ function ToolJoiner(props){
         var totI=0,totC=0,totA=0;
         if(calcResult) calcResult.results.forEach(function(r){if(r){totI+=r.inf;totC+=r.cav;totA+=r.arc;}});
         var hasShortage=nI<totI||nC<totC||nA<totA;
-        return h("div",{style:{paddingBottom:80}},
+        return h("div",{style:{paddingBottom:20}},
           calcResult&&calcResult.results.map(function(res,i){
             if(!res) return null;
             return h("div",{key:i,className:"card"},
@@ -978,7 +978,7 @@ function GuideHost(props){
     {s:"S5",inf:"龍飛",cav:"スルード",arc:"ビビアン"},
     {s:"S6",inf:"トリトン",cav:"ソフィア",arc:"ヤン"}
   ];
-  return h("div",{style:{paddingBottom:80}},
+  return h("div",{style:{paddingBottom:20}},
     
     h("div",{style:{marginBottom:16}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結主（ホスト）ガイド"),
@@ -1129,7 +1129,7 @@ function GuideJoiner(props){
     {rank:6,name:"アマデウス",skill:"殺傷力・HP+15%常時",type:"—",note:"集結主優先・ジョイナーでは代替候補"}
   ];
   var NG=["ゴードン","ファハド","ハワード"];
-  return h("div",{style:{paddingBottom:80}},
+  return h("div",{style:{paddingBottom:20}},
     
     h("div",{style:{marginBottom:16}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊ジョイナー 左英雄指定ガイド"),
