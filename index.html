@@ -741,16 +741,18 @@ function ToolJoiner(props){
 
     step===1&&h("div",{className:"step-content"},null,
       h("div",{className:"card"},
-        h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
-        h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
-        h("select",{value:petLv,onChange:function(e){setPetLv(parseInt(e.target.value));}},
+        h("p",{className:"sec"},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
+        h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
+        h("select",{style:{width:"100%",padding:"10px 12px",borderRadius:"8px",border:"1px solid #d0d0d0",fontSize:"15px",fontFamily:"inherit"},value:petLv,onChange:function(e){setPetLv(parseInt(e.target.value));}},
           [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
             return h("option",{key:lv,value:lv},lv===0?"なし（未習得）":("Lv "+lv+(lv>0?" (+"+RAGING_BEAST_BONUSES[lv].toLocaleString()+"人)":"")));
           })
-        ),
-        h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"マスター学院「人数優位」Lv"),
-        h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
-        h("select",{value:villaLv,onChange:function(e){setVillaLv(parseInt(e.target.value));}},
+        )
+      ),
+      h("div",{className:"card"},
+        h("p",{className:"sec"},"マスター学院「人数優位」Lv"),
+        h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
+        h("select",{style:{width:"100%",padding:"10px 12px",borderRadius:"8px",border:"1px solid #d0d0d0",fontSize:"15px",fontFamily:"inherit"},value:villaLv,onChange:function(e){setVillaLv(parseInt(e.target.value));}},
           [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
             return h("option",{key:lv,value:lv},lv===0?"なし（スキルなし）":("Lv "+lv+(lv>0?" (+"+String(lv*3000).toLocaleString()+"人)":"")));
           })
@@ -758,7 +760,7 @@ function ToolJoiner(props){
       ),
       h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"使用できる行軍数"),
-        h("select",{value:march,onChange:function(e){setMarch(parseInt(e.target.value));}},
+        h("select",{style:{width:"100%",padding:"10px 12px",borderRadius:"8px",border:"1px solid #d0d0d0",fontSize:"15px",fontFamily:"inherit"},value:march,onChange:function(e){setMarch(parseInt(e.target.value));}},
           [
             {v:1,l:"自集結のみ　行軍なし"},
             {v:2,l:"自集結 ＋ 1行軍　計2部隊"},
