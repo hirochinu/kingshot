@@ -752,7 +752,7 @@ function ToolJoiner(props){
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
         h("select",{value:villaLv,onChange:function(e){setVillaLv(parseInt(e.target.value));}},
           [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
-            return h("option",{key:lv,value:lv},lv===0?"なし（スキルなし）":("Lv "+lv+(lv>0?" (+"++(lv*3000).toLocaleString()+"人)":"")));
+            return h("option",{key:lv,value:lv},lv===0?"なし（スキルなし）":("Lv "+lv+(lv>0?" (+"+String(lv*3000).toLocaleString()+"人)":"")));
           })
         )
       ),
