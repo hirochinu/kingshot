@@ -308,32 +308,13 @@ function parseKeyValues(txt,keys){
 
 function parseBonus(txt){
   var res={};
-  var km={
-    "歩兵攻撃力":"infAtk","歩兵攻擊力":"infAtk",
-    "歼兵攻撃力":"infAtk","歼兵攻擊力":"infAtk",
-    "步兵攻撃力":"infAtk","步兵攻擊力":"infAtk",
-    "歼步兵攻撃力":"infAtk","歼步兵攻擊力":"infAtk",
-
-    "歩兵殺傷力":"infLet",
-    "歼兵殺傷力":"infLet",
-    "步兵殺傷力":"infLet",
-    "歼步兵殺傷力":"infLet",
-
-    "騎兵攻撃力":"cavAtk","騎兵攻擊力":"cavAtk",
-    "騎兵殺傷力":"cavLet",
-
-    "弓兵攻撃力":"arcAtk","弓兵攻擊力":"arcAtk",
-    "弓兵殺傷力":"arcLet"
-  };
+  var km={"歩兵攻撃力":"infAtk","歩兵攻擊力":"infAtk","歩兵殺傷力":"infLet","騎兵攻撃力":"cavAtk","騎兵攻擊力":"cavAtk","騎兵殺傷力":"cavLet","弓兵攻撃力":"arcAtk","弓兵攻擊力":"arcAtk","弓兵殺傷力":"arcLet"};
+  var pt=[{key:"歼兵攻",f:"infAtk"},{key:"歼兵殺",f:"infLet"},{key:"步兵攻",f:"infAtk"},{key:"步兵殺",f:"infLet"},{key:"歩兵攻",f:"infAtk"},{key:"歩兵殺",f:"infLet"},{key:"騎兵攻",f:"cavAtk"},{key:"騎兵殺",f:"cavLet"},{key:"弓兵攻",f:"arcAtk"},{key:"弓兵殺",f:"arcLet"}];
   var lines=txt.split(/[\n\r]+/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
   for(var i=0;i<lines.length;i++){
     var line=lines[i],field=km[line];
-    if(field&&res[field]==null){
-      for(var j=i+1;j<=i+3&&j<lines.length;j++){
-        var m=lines[j].match(/\d+\.?\d*/);
-        if(m){res[field]=parseFloat(m[0]);break;}
-      }
-    }
+    if(field&&res[field]==null&&i>0){var m=lines[i-1].match(/\d+\.?\d*/);if(m){res[field]=parseFloat(m[0]);}}
+    if(!field){pt.forEach(function(p){if(line.indexOf(p.key)!==-1&&res[p.f]==null&&i>0){var m=lines[i-1].match(/\d+\.?\d*/);if(m){res[p.f]=parseFloat(m[0]);}}});}
   }
   return res;
 }
