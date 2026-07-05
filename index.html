@@ -313,8 +313,8 @@ function parseBonus(txt){
   var lines=txt.split(/[\n\r]+/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
   for(var i=0;i<lines.length;i++){
     var line=lines[i],field=km[line];
-    if(field&&res[field]==null&&i>0){var m=lines[i-1].match(/\d+\.?\d*/);if(m){res[field]=parseFloat(m[0]);}}
-    if(!field){pt.forEach(function(p){if(line.indexOf(p.key)!==-1&&res[p.f]==null&&i>0){var m=lines[i-1].match(/\d+\.?\d*/);if(m){res[p.f]=parseFloat(m[0]);}}});}
+    if(field&&res[field]==null){for(var j=i+1;j<i+4&&j<lines.length;j++){var m=lines[j].match(/\d+\.?\d*/);if(m){res[field]=parseFloat(m[0]);break;}}}
+    if(!field){pt.forEach(function(p){if(line.indexOf(p.key)!==-1&&res[p.f]==null){for(var j=i+1;j<i+4&&j<lines.length;j++){var m=lines[j].match(/\d+\.?\d*/);if(m){res[p.f]=parseFloat(m[0]);break;}}}});}
   }
   return res;
 }
