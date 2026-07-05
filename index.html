@@ -309,20 +309,12 @@ function parseKeyValues(txt,keys){
 function parseBonus(txt){
   var res={};
   var km={"歩兵攻撃力":"infAtk","歩兵攻擊力":"infAtk","歩兵殺傷力":"infLet","騎兵攻撃力":"cavAtk","騎兵攻擊力":"cavAtk","騎兵殺傷力":"cavLet","弓兵攻撃力":"arcAtk","弓兵攻擊力":"arcAtk","弓兵殺傷力":"arcLet"};
-  var lines=txt.split(/\n|\r/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
+  var pt=[{key:"歩兵攻",f:"infAtk"},{key:"歩兵殺",f:"infLet"},{key:"騎兵攻",f:"cavAtk"},{key:"騎兵殺",f:"cavLet"},{key:"弓兵攻",f:"arcAtk"},{key:"弓兵殺",f:"arcLet"}];
+  var lines=txt.split(/[\n\r]+/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
   for(var i=0;i<lines.length;i++){
-    var line=lines[i],fld=km[line];
-    if(fld&&res[fld]==null){
-      if(i>0){var m=lines[i-1].match(/(\d+\.?\d*)/);if(m){res[fld]=parseFloat(m[1]);continue;}}
-      if(i+1<lines.length){var m2=lines[i+1].match(/(\d+\.?\d*)/);if(m2){res[fld]=parseFloat(m2[1]);continue;}}
-    }
-    var parts=line.split("\t");
-    if(parts.length>=2){
-      var fA=km[parts[0].trim()];
-      if(fA&&res[fA]==null){var mA=parts[1].match(/(\d+\.?\d*)/);if(mA){res[fA]=parseFloat(mA[1]);continue;}}
-      var fB=km[parts[1].trim()];
-      if(fB&&res[fB]==null){var mB=parts[0].match(/(\d+\.?\d*)/);if(mB){res[fB]=parseFloat(mB[1]);continue;}}
-    }
+    var line=lines[i],field=km[line];
+    if(field&&res[field]==null&&i>0){var m=lines[i-1].match(/\d+\.?\d*/);if(m){res[field]=parseFloat(m[0]);}}
+    if(!field){pt.forEach(function(p){if(line.indexOf(p.key)!==-1&&res[p.f]==null&&i>0){var m=lines[i-1].match(/\d+\.?\d*/);if(m){res[p.f]=parseFloat(m[0]);}}});}
   }
   return res;
 }
@@ -411,7 +403,7 @@ function PasteBonus(props){
     {key:"cavAtk",lb:"騎兵ATK",col:IC.cav,bg:IB.cav},{key:"cavLet",lb:"騎兵殺傷",col:IC.cav,bg:IB.cav},
     {key:"arcAtk",lb:"弓兵ATK",col:IC.arc,bg:IB.arc},{key:"arcLet",lb:"弓兵殺傷",col:IC.arc,bg:IB.arc}
   ];
-  return h("div",{style:{paddingBottom:20}},
+  return h("div",{style:{paddingBottom:80}},
     h("div",{style:{background:"rgba(0,122,255,.07)",borderRadius:14,padding:"14px 16px",marginBottom:12}},
       h("p",{style:{fontSize:13,fontWeight:600,color:"#007aff",marginBottom:12}},"📋 テキストの取得方法"),
       h(GuideAccordion,{label:"iOS",color:"#007aff",steps:[
@@ -483,7 +475,7 @@ function ToolHost(props){
   var hasAll=vIA>0&&vIL>0&&vCA>0&&vCL>0&&vAA>0&&vAL>0;
   var conic="conic-gradient("+IC.inf+" 0% "+opt.inf+"%, "+IC.cav+" "+opt.inf+"% "+(opt.inf+opt.cav)+"%, "+IC.arc+" "+(opt.inf+opt.cav)+"% 100%)";
 
-  return h("div",{style:{paddingBottom:20}},
+  return h("div",{style:{paddingBottom:80}},
   
     
     h("div",{style:{marginBottom:16}},
@@ -509,9 +501,9 @@ function ToolHost(props){
             )
           );
         }),
-        !hasAll&&h("div",{style:{marginTop:8,fontSize:13,color:"#8e8e93",textAlign:"center"}},"6項目すべて入力すると次へ進めます")
-      ),
-      h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：兵士の設定　→")
+        !hasAll&&h("div",{style:{marginTop:8,fontSize:13,color:"#8e8e93",textAlign:"center"}},"6項目すべて入力すると次へ進めます"),
+        h("button",{className:"btn"+(hasAll?"":" btn-gray"),disabled:!hasAll,onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：兵士の設定　→")
+      )
     ),
 
     step===1&&h("div",{className:"step-content"},
@@ -666,7 +658,7 @@ function ToolJoiner(props){
     return {results:results,left:left};
   },[nI,nC,nA,march,mSz,mIP,mCP,mode,villaLv,petLv]);
 
-  return h("div",{style:{paddingBottom:20}},
+  return h("div",{style:{paddingBottom:80}},
   
     
     h("div",{style:{marginBottom:16}},
@@ -741,36 +733,61 @@ function ToolJoiner(props){
 
     step===1&&h("div",{className:"step-content"},null,
       h("div",{className:"card"},
-        h("p",{className:"sec"},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
-        h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
-        h("select",{style:{width:"100%",padding:"10px 12px",borderRadius:"8px",border:"1px solid #d0d0d0",fontSize:"15px",fontFamily:"inherit"},value:petLv,onChange:function(e){setPetLv(parseInt(e.target.value));}},
+        h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
+        h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
+        h("div",{className:"list-group"},
           [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
-            return h("option",{key:lv,value:lv},lv===0?"なし（未習得）":("Lv "+lv+(lv>0?" (+"+RAGING_BEAST_BONUSES[lv].toLocaleString()+"人)":"")));
+            var on=petLv===lv;
+            return h("div",{key:lv,className:"list-row"+(on?" on":""),
+              onClick:(function(v){return function(){setPetLv(v);};})(lv),
+              className:"flex-between"},
+              h("span",{style:{fontSize:15,color:"#000"}},lv===0?"なし（未習得）":"Lv "+lv),
+              h("div",{style:{display:"flex",alignItems:"center",gap:10}},
+                lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(RAGING_BEAST_BONUSES[lv]).toLocaleString()+"人"),
+                on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
+              )
+            );
           })
-        )
-      ),
-      h("div",{className:"card"},
-        h("p",{className:"sec"},"マスター学院「人数優位」Lv"),
-        h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
-        h("select",{style:{width:"100%",padding:"10px 12px",borderRadius:"8px",border:"1px solid #d0d0d0",fontSize:"15px",fontFamily:"inherit"},value:villaLv,onChange:function(e){setVillaLv(parseInt(e.target.value));}},
+        ),
+        h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"マスター学院「人数優位」Lv"),
+        h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
+        h("div",{className:"list-group"},
           [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
-            return h("option",{key:lv,value:lv},lv===0?"なし（スキルなし）":("Lv "+lv+(lv>0?" (+"+String(lv*3000).toLocaleString()+"人)":"")));
+            var on=villaLv===lv;
+            return h("div",{key:lv,className:"list-row"+(on?" on":""),
+              onClick:(function(v){return function(){setVillaLv(v);};})(lv),
+              className:"flex-between"},
+              h("span",{style:{fontSize:15,color:"#000"}},lv===0?"なし（スキルなし）":"Lv "+lv),
+              h("div",{style:{display:"flex",alignItems:"center",gap:10}},
+                lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(lv*3000).toLocaleString()+"人"),
+                on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
+              )
+            );
           })
         )
       ),
       h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"使用できる行軍数"),
-        h("select",{style:{width:"100%",padding:"10px 12px",borderRadius:"8px",border:"1px solid #d0d0d0",fontSize:"15px",fontFamily:"inherit"},value:march,onChange:function(e){setMarch(parseInt(e.target.value));}},
+        h("div",{className:"list-group"},
           [
-            {v:1,l:"自集結のみ　行軍なし"},
-            {v:2,l:"自集結 ＋ 1行軍　計2部隊"},
-            {v:3,l:"自集結 ＋ 2行軍　計3部隊"},
-            {v:4,l:"自集結 ＋ 3行軍　計4部隊"},
-            {v:5,l:"自集結 ＋ 4行軍　計5部隊"},
-            {v:6,l:"自集結 ＋ 5行軍　計6部隊"},
-            {v:7,l:"自集結 ＋ 6行軍　計7部隊"}
+            {v:1,l:"自集結のみ",s:"行軍なし"},
+            {v:2,l:"自集結 ＋ 行軍①",s:"計2部隊"},
+            {v:3,l:"自集結 ＋ 行軍①②",s:"計3部隊"},
+            {v:4,l:"自集結 ＋ 行軍①〜③",s:"計4部隊"},
+            {v:5,l:"自集結 ＋ 行軍①〜④",s:"計5部隊"},
+            {v:6,l:"自集結 ＋ 行軍①〜⑤",s:"計6部隊"},
+            {v:7,l:"自集結 ＋ 行軍①〜⑥",s:"計7部隊"}
           ].map(function(m){
-            return h("option",{key:m.v,value:m.v},m.l);
+            var on=march===m.v;
+            return h("div",{key:m.v,onClick:(function(v){return function(){setMarch(v);};})(m.v),
+              className:"list-row"+(on?" on":""),
+              className:"flex-between"},
+              h("span",{style:{fontSize:15,color:"#000"}},m.l),
+              h("div",{style:{display:"flex",alignItems:"center",gap:10}},
+                h("span",{style:{fontSize:12,color:"#8e8e93"}},m.s),
+                on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
+              )
+            );
           })
         )
       ),
@@ -858,7 +875,7 @@ function ToolJoiner(props){
         var totI=0,totC=0,totA=0;
         if(calcResult) calcResult.results.forEach(function(r){if(r){totI+=r.inf;totC+=r.cav;totA+=r.arc;}});
         var hasShortage=nI<totI||nC<totC||nA<totA;
-        return h("div",{style:{paddingBottom:20}},
+        return h("div",{style:{paddingBottom:80}},
           calcResult&&calcResult.results.map(function(res,i){
             if(!res) return null;
             return h("div",{key:i,className:"card"},
@@ -953,7 +970,7 @@ function GuideHost(props){
     {s:"S5",inf:"龍飛",cav:"スルード",arc:"ビビアン"},
     {s:"S6",inf:"トリトン",cav:"ソフィア",arc:"ヤン"}
   ];
-  return h("div",{style:{paddingBottom:20}},
+  return h("div",{style:{paddingBottom:80}},
     
     h("div",{style:{marginBottom:16}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結主（ホスト）ガイド"),
@@ -1104,7 +1121,7 @@ function GuideJoiner(props){
     {rank:6,name:"アマデウス",skill:"殺傷力・HP+15%常時",type:"—",note:"集結主優先・ジョイナーでは代替候補"}
   ];
   var NG=["ゴードン","ファハド","ハワード"];
-  return h("div",{style:{paddingBottom:20}},
+  return h("div",{style:{paddingBottom:80}},
     
     h("div",{style:{marginBottom:16}},
       h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊ジョイナー 左英雄指定ガイド"),
