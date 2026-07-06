@@ -261,7 +261,7 @@ var IC={inf:"#ff9500",cav:"#af52de",arc:"#007aff"};
 var IB={inf:"rgba(255,149,0,.12)",cav:"rgba(175,82,222,.12)",arc:"rgba(0,122,255,.12)"};
 var TIERS=[
   {v:"t1t6",l:"兵士lv1〜6",b:1.10},
-  {v:"t7tg2",l:"兵士lv7〜黄金2",b:1.10},
+  {v:"t7tg2",l:"兵士lv7〜黄金2",b:1.21},
   {v:"tg3tg4",l:"黄金3〜4",b:1.21},
   {v:"tg5tg7",l:"黄金5〜7",b:1.21}
 ];
@@ -439,15 +439,15 @@ function ToolHost(props){
   React.useEffect(function(){window.history.pushState({tool:"host"},"","#host");},[]);
   React.useEffect(function(){var handlePopstate=function(){onBack();};var handleHashchange=function(){var hash=window.location.hash.slice(1);if(!hash||hash==="host"){onBack();}};window.addEventListener("popstate",handlePopstate);window.addEventListener("hashchange",handleHashchange);return function(){window.removeEventListener("popstate",handlePopstate);window.removeEventListener("hashchange",handleHashchange);};},[onBack]);
   var ss=useState(0);var step=ss[0],setStep=ss[1];
-  var st=useState({infAtk:"",infLet:"",cavAtk:"",cavLet:"",arcAtk:"",arcLet:""});
-  var troops=st[0],setTroops=st[1];
-  var upT=function(k,v){setTroops(Object.assign({},troops,{[k]:v}));};
-  var infAtk=troops.infAtk,setIA=function(v){upT("infAtk",v);};
-  var infLet=troops.infLet,setIL=function(v){upT("infLet",v);};
-  var cavAtk=troops.cavAtk,setCA=function(v){upT("cavAtk",v);};
-  var cavLet=troops.cavLet,setCL=function(v){upT("cavLet",v);};
-  var arcAtk=troops.arcAtk,setAA=function(v){upT("arcAtk",v);};
-  var arcLet=troops.arcLet,setAL=function(v){upT("arcLet",v);};
+  var sb=useState({infAtk:"",infLet:"",cavAtk:"",cavLet:"",arcAtk:"",arcLet:""});
+  var bonus=sb[0],setBonus=sb[1];
+  var upT=function(k,v){setBonus(Object.assign({},bonus,{[k]:v}));};
+  var infAtk=bonus.infAtk,setIA=function(v){upT("infAtk",v);};
+  var infLet=bonus.infLet,setIL=function(v){upT("infLet",v);};
+  var cavAtk=bonus.cavAtk,setCA=function(v){upT("cavAtk",v);};
+  var cavLet=bonus.cavLet,setCL=function(v){upT("cavLet",v);};
+  var arcAtk=bonus.arcAtk,setAA=function(v){upT("arcAtk",v);};
+  var arcLet=bonus.arcLet,setAL=function(v){upT("arcLet",v);};
   var st=useState("tg3tg4"),sr=useState(0);
   var tier=st[0],setTier=st[1],rosa=sr[0],setRosa=sr[1];
   var curT=TIERS.find(function(t){return t.v===tier;})||TIERS[0];
@@ -466,7 +466,7 @@ function ToolHost(props){
     if(p.cavAtk!=null)setCA(String(p.cavAtk));if(p.cavLet!=null)setCL(String(p.cavLet));
     if(p.arcAtk!=null)setAA(String(p.arcAtk));if(p.arcLet!=null)setAL(String(p.arcLet));
   }
-  var troops=[
+  var rows=[
     {em:"🛡️",lb:"歩兵",col:IC.inf,atk:infAtk,setA:setIA,lt:infLet,setL:setIL},
     {em:"🐎",lb:"騎兵",col:IC.cav,atk:cavAtk,setA:setCA,lt:cavLet,setL:setCL},
     {em:"🏹",lb:"弓兵",col:IC.arc,atk:arcAtk,setA:setAA,lt:arcLet,setL:setAL}
@@ -492,7 +492,7 @@ function ToolHost(props){
         h(PasteBonus,{onResult:applyParsed}),
         h("div",{className:"sep"}),
         h("p",{className:"sec"},"手動入力 / 確認・修正"),
-        troops.map(function(row){
+        rows.map(function(row){
           return h("div",{key:row.lb},
             h("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:8}},h("span",null,row.em),h("span",{style:{fontSize:15,fontWeight:600,color:row.col}},row.lb)),
             h("div",{style:{display:"grid",gridTemplateColumns:"minmax(0,1fr) minmax(0,1fr)",gap:8}},
