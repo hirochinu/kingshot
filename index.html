@@ -557,25 +557,23 @@ function ToolHost(props){
         h("p",{className:"sec"},"出征兵士の階層"),
         h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.5}},"集結に参加させる兵士の階層を選んでください。"),
         h("div",{style:{background:"rgba(255,149,0,.08)",borderRadius:12,padding:"12px",marginBottom:12,fontSize:12,color:"#9a5f00",lineHeight:1.6}},"💡 下記で設定したペット・学院のボーナスはツール側で自動加算されます。"),
-        h("div",{className:"list-group"},
-          TIERS.map(function(t){
-            var on=tier===t.v;
-            return h("div",{key:t.v,className:"list-row"+(on?" on":""),onClick:(function(v){return function(){setTier(v);};})(t.v)},
-              h("span",{style:{fontSize:15,color:"#000"}},t.l),
-              on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-            );
-          })
+        h("div",{className:"dropdown-wrap"},
+          h("select",{className:"dropdown",value:tier,
+            onChange:function(ev){setTier(ev.target.value);}},
+            TIERS.map(function(t){
+              return h("option",{key:t.v,value:t.v},t.l);
+            })
+          )
         ),
         h("p",{className:"sec"},"ローザの遠征スキル「ゴールデン・リズム」"),
         h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.6}},"ローザを集結主に使用している場合のみ設定してください。弓兵ATKが強化されるため最適な兵種比率が変わります。"),
-        h("div",{className:"list-group"},
-          ROSA_LIST.map(function(r){
-            var on=rosa===r.lv;
-            return h("div",{key:r.lv,className:"list-row"+(on?" on":""),onClick:(function(lv){return function(){setRosa(lv);};})(r.lv)},
-              h("div",null,h("div",{style:{fontSize:15,color:"#000"}},r.label),h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},r.sub)),
-              on&&h("span",{style:{fontSize:18,color:"#007aff",flexShrink:0}},"✓")
-            );
-          })
+        h("div",{className:"dropdown-wrap"},
+          h("select",{className:"dropdown",value:rosa,
+            onChange:function(ev){setRosa(parseInt(ev.target.value,10));}},
+            ROSA_LIST.map(function(r){
+              return h("option",{key:r.lv,value:r.lv},r.label+"　"+r.sub);
+            })
+          )
         ),
         rosa>0&&h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(0,122,255,.1)",fontSize:13,color:"#007aff",marginTop:12}},
           "弓兵ATK "+vAA.toFixed(1)+"% × "+(1+rBon/100).toFixed(2)+" = "+arcEff.toFixed(1)+"%"
