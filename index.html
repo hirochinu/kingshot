@@ -547,9 +547,9 @@ function ToolHost(props){
             )
           );
         }),
-        !hasAll&&h("div",{style:{marginTop:8,fontSize:13,color:"#8e8e93",textAlign:"center"}},"6項目すべて入力すると次へ進めます"),
-        h("button",{className:"btn"+(hasAll?"":" btn-gray"),disabled:!hasAll,onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：兵士の設定　→")
-      )
+        !hasAll&&h("div",{style:{marginTop:8,fontSize:13,color:"#8e8e93",textAlign:"center"}},"6項目すべて入力すると次へ進めます")
+      ),
+      h("button",{className:"btn"+(hasAll?"":" btn-gray"),disabled:!hasAll,onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：兵士の設定　→")
     ),
 
     step===1&&h("div",{className:"step-content"},
