@@ -622,11 +622,6 @@ function ToolHost(props){
           "💡 この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。"
         ),
         h("button",{className:"btn",style:{marginTop:16},onClick:function(){window.scrollTo(0,0),setStep(0);}},"最初からやり直す")
-      ),
-      h("div",{style:{position:"fixed",bottom:0,left:0,right:0,zIndex:999,background:"#fff",borderTop:"1px solid #f0f0f0",padding:"12px"}},
-        h("div",{style:{maxWidth:520,margin:"0 auto"}},
-          h("button",{style:{width:"100%",padding:"14px 0",background:"#007aff",color:"#fff",border:"none",borderRadius:12,fontSize:16,fontWeight:600,cursor:"pointer",fontFamily:"inherit"},onClick:onBack},"← メニューに戻る")
-        )
       )
     )
   );
