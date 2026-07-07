@@ -1133,7 +1133,8 @@ function GuideHost(props){
           h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.7}},line)
         );
       })
-    )
+    ),
+    h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
   );
 }
 
@@ -1241,7 +1242,8 @@ function GuideJoiner(props){
         "歩兵 1% ／ 騎兵 10% ／ 弓兵 89%",h("br",null),
         h("span",{style:{fontSize:12,color:"#6e6e73"}},"※歩兵は最低5,000体キープ。複数兵種編成が英雄バフ最適化に必須。")
       )
-    )
+    ),
+    h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
   );
 }
 
