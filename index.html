@@ -196,6 +196,52 @@ input[type=number]:focus{outline:none}
   box-shadow:var(--shadow-sm)
 }
 
+.dropdown-wrap{position:relative;margin-bottom:var(--spacing-sm)}
+
+.dropdown{
+  width:100%;
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  background:var(--bg-card);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:none;
+  border-radius:var(--radius-md);
+  box-shadow:var(--shadow-sm);
+  padding:14px 42px 14px var(--spacing-lg);
+  font-size:15px;
+  font-weight:600;
+  color:var(--text-primary);
+  font-family:inherit;
+  cursor:pointer;
+  outline:none;
+  transition:box-shadow .15s ease,background .15s ease;
+  text-overflow:ellipsis
+}
+
+.dropdown:hover{box-shadow:var(--shadow-md),0 1px 3px rgba(0,0,0,.04)}
+.dropdown:focus{outline:none;background:var(--primary-light);box-shadow:0 0 0 2px var(--primary)}
+.dropdown:active{background:rgba(0,0,0,.03)}
+
+.dropdown-wrap::after{
+  content:"";
+  position:absolute;
+  right:19px;
+  top:50%;
+  width:8px;
+  height:8px;
+  border-right:2px solid var(--text-tertiary);
+  border-bottom:2px solid var(--text-tertiary);
+  transform:translateY(-65%) rotate(45deg);
+  pointer-events:none;
+  transition:border-color .15s ease
+}
+
+.dropdown-wrap:focus-within::after{border-color:var(--primary)}
+
+.dropdown-hint{font-size:12px;color:var(--text-tertiary);margin:6px 2px 0}
+
 .list-row{
   display:flex;
   align-items:center;
@@ -737,60 +783,44 @@ function ToolJoiner(props){
       h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"ペット「巨大蛮牛」のスキル「レイジングビースト」Lv"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"出征部隊の容量上限を増加させます。Lv×1,500が加算されます。"),
-        h("div",{className:"list-group"},
-          [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
-            var on=petLv===lv;
-            return h("div",{key:lv,className:"list-row"+(on?" on":""),
-              onClick:(function(v){return function(){setPetLv(v);};})(lv),
-              className:"flex-between"},
-              h("span",{style:{fontSize:15,color:"#000"}},lv===0?"なし（未習得）":"Lv "+lv),
-              h("div",{style:{display:"flex",alignItems:"center",gap:10}},
-                lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(RAGING_BEAST_BONUSES[lv]).toLocaleString()+"人"),
-                on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-              )
-            );
-          })
+        h("div",{className:"dropdown-wrap"},
+          h("select",{className:"dropdown",value:petLv,
+            onChange:function(ev){setPetLv(parseInt(ev.target.value,10));}},
+            [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
+              return h("option",{key:lv,value:lv},
+                lv===0?"なし（未習得）":"Lv "+lv+"　＋"+(RAGING_BEAST_BONUSES[lv]).toLocaleString()+"人");
+            })
+          )
         ),
-        h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"マスター学院「人数優位」Lv"),
+        h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12,marginTop:20}},"マスター学院「人数優位」Lv"),
         h("p",{style:{fontSize:12,color:"#8e8e93",marginBottom:12,lineHeight:1.5}},"ヴィラのスキル。Lv×3,000人が各行軍の出征容量に自動加算されます。"),
-        h("div",{className:"list-group"},
-          [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
-            var on=villaLv===lv;
-            return h("div",{key:lv,className:"list-row"+(on?" on":""),
-              onClick:(function(v){return function(){setVillaLv(v);};})(lv),
-              className:"flex-between"},
-              h("span",{style:{fontSize:15,color:"#000"}},lv===0?"なし（スキルなし）":"Lv "+lv),
-              h("div",{style:{display:"flex",alignItems:"center",gap:10}},
-                lv>0&&h("span",{style:{fontSize:12,color:"#8e8e93"}},"＋"+(lv*3000).toLocaleString()+"人"),
-                on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-              )
-            );
-          })
+        h("div",{className:"dropdown-wrap"},
+          h("select",{className:"dropdown",value:villaLv,
+            onChange:function(ev){setVillaLv(parseInt(ev.target.value,10));}},
+            [0,1,2,3,4,5,6,7,8,9,10].map(function(lv){
+              return h("option",{key:lv,value:lv},
+                lv===0?"なし（スキルなし）":"Lv "+lv+"　＋"+(lv*3000).toLocaleString()+"人");
+            })
+          )
         )
       ),
       h("div",{className:"card"},
         h("p",{style:{fontSize:13,fontWeight:600,color:"#6e6e73",marginBottom:12}},"使用できる行軍数"),
-        h("div",{className:"list-group"},
-          [
-            {v:1,l:"自集結のみ",s:"行軍なし"},
-            {v:2,l:"自集結 ＋ 1行軍",s:"計2部隊"},
-            {v:3,l:"自集結 ＋ 2行軍",s:"計3部隊"},
-            {v:4,l:"自集結 ＋ 3行軍",s:"計4部隊"},
-            {v:5,l:"自集結 ＋ 4行軍",s:"計5部隊"},
-            {v:6,l:"自集結 ＋ 5行軍",s:"計6部隊"},
-            {v:7,l:"自集結 ＋ 6行軍",s:"計7部隊"}
-          ].map(function(m){
-            var on=march===m.v;
-            return h("div",{key:m.v,onClick:(function(v){return function(){setMarch(v);};})(m.v),
-              className:"list-row"+(on?" on":""),
-              className:"flex-between"},
-              h("span",{style:{fontSize:15,color:"#000"}},m.l),
-              h("div",{style:{display:"flex",alignItems:"center",gap:10}},
-                h("span",{style:{fontSize:12,color:"#8e8e93"}},m.s),
-                on&&h("span",{style:{fontSize:18,color:"#007aff"}},"✓")
-              )
-            );
-          })
+        h("div",{className:"dropdown-wrap"},
+          h("select",{className:"dropdown",value:march,
+            onChange:function(ev){setMarch(parseInt(ev.target.value,10));}},
+            [
+              {v:1,l:"自集結のみ",s:"行軍なし"},
+              {v:2,l:"自集結 ＋ 1行軍",s:"計2部隊"},
+              {v:3,l:"自集結 ＋ 2行軍",s:"計3部隊"},
+              {v:4,l:"自集結 ＋ 3行軍",s:"計4部隊"},
+              {v:5,l:"自集結 ＋ 4行軍",s:"計5部隊"},
+              {v:6,l:"自集結 ＋ 5行軍",s:"計6部隊"},
+              {v:7,l:"自集結 ＋ 6行軍",s:"計7部隊"}
+            ].map(function(m){
+              return h("option",{key:m.v,value:m.v},m.l+"　"+m.s);
+            })
+          )
         )
       ),
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：各行軍の設定　→")
