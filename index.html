@@ -441,7 +441,7 @@ function ToolHost(props){
   var ss=useState(0);var step=ss[0],setStep=ss[1];
   var sb=useState({infAtk:"",infLet:"",cavAtk:"",cavLet:"",arcAtk:"",arcLet:""});
   var bonus=sb[0],setBonus=sb[1];
-  var upT=function(k,v){setBonus(Object.assign({},bonus,{[k]:v}));};
+  var upT=function(k,v){setBonus(function(prev){return Object.assign({},prev,{[k]:v});});};
   var infAtk=bonus.infAtk,setIA=function(v){upT("infAtk",v);};
   var infLet=bonus.infLet,setIL=function(v){upT("infLet",v);};
   var cavAtk=bonus.cavAtk,setCA=function(v){upT("cavAtk",v);};
