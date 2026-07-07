@@ -952,7 +952,7 @@ function ToolJoiner(props){
               )
             );
           }),
-          !calcResult&&h("div",{className:"toast toast-warn"},"⚠️ 保有数または出征容量が入力されていません"),
+          !calcResult&&h("div",{className:"toast toast-warn",style:{marginBottom:8}},"⚠️ 保有数または出征容量が入力されていません"),
           calcResult&&h("div",{className:"card-hi"},
             h("p",{className:"sec"},mode==="none"?"保有数との差引き（全行軍合計）":"配分後の残り兵士"),
             h("div",{style:{display:"flex",gap:8}},
