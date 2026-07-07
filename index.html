@@ -549,7 +549,10 @@ function ToolHost(props){
         }),
         !hasAll&&h("div",{style:{marginTop:8,fontSize:13,color:"#8e8e93",textAlign:"center"}},"6項目すべて入力すると次へ進めます")
       ),
-      h("button",{className:"btn"+(hasAll?"":" btn-gray"),disabled:!hasAll,onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：兵士の設定　→")
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn btn-gray",style:{flex:"0 0 92px",marginTop:0},onClick:function(){window.scrollTo(0,0),onBack();}},"戻る"),
+        h("button",{className:"btn"+(hasAll?"":" btn-gray"),style:{flex:1,marginTop:0},disabled:!hasAll,onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ　→")
+      )
     ),
 
     step===1&&h("div",{className:"step-content"},
@@ -579,7 +582,10 @@ function ToolHost(props){
           "弓兵ATK "+vAA.toFixed(1)+"% × "+(1+rBon/100).toFixed(2)+" = "+arcEff.toFixed(1)+"%"
         )
       ),
-      h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：結果を見る　→")
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn btn-gray",style:{flex:"0 0 92px",marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(0);}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ　→")
+      )
     ),
 
     step===2&&h("div",{className:"step-content"},
@@ -771,7 +777,10 @@ function ToolJoiner(props){
           )
         )
       ),
-      h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ：行軍設定　→")
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn btn-gray",style:{flex:"0 0 92px",marginTop:0},onClick:function(){window.scrollTo(0,0),onBack();}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ　→")
+      )
     ),
 
     step===1&&h("div",{className:"step-content"},null,
@@ -818,7 +827,10 @@ function ToolJoiner(props){
           )
         )
       ),
-      h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ：各行軍の設定　→")
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn btn-gray",style:{flex:"0 0 92px",marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(0);}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ　→")
+      )
     ),
 
     step===2&&h("div",{className:"step-content"},null,
@@ -883,7 +895,10 @@ function ToolJoiner(props){
           over&&h("div",{className:"toast toast-warn"},"⚠️ 歩兵＋騎兵の合計が"+(pI+pC)+"%です")
         );
       }),
-      h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),setStep(3);}},"結果を見る　→")
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn btn-gray",style:{flex:"0 0 92px",marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(1);}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(3);}},"次へ　→")
+      )
     ),
 
     step===3&&h("div",{className:"step-content"},null,
