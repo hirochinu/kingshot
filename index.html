@@ -589,43 +589,46 @@ function ToolHost(props){
     ),
 
     step===2&&h("div",{className:"step-content"},
-      h("div",{className:"card-hi"},
-        h("p",{className:"sec"},"最適な兵種比率"),
-        h("div",{style:{display:"flex",alignItems:"center",gap:20,marginBottom:20}},
-          h("div",{style:{position:"relative",width:120,height:120,flexShrink:0}},
-            h("div",{style:{width:120,height:120,borderRadius:"50%",background:conic,boxShadow:"0 4px 16px rgba(0,0,0,.12)"}}),
-            h("div",{style:{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:66,height:66,borderRadius:"50%",background:"rgba(255,255,255,.95)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2}},
-              h("div",{style:{fontSize:7,color:"#8e8e93",letterSpacing:1}},"OPTIMAL"),
-              h("div",{style:{fontSize:9,fontWeight:700,color:"#000",textAlign:"center",lineHeight:1.5}},"歩"+opt.inf,h("br",null),"騎"+opt.cav+" 弓"+opt.arc)
+      h("div",{className:"card-hi",style:{padding:"24px 20px",background:"linear-gradient(160deg, rgba(0,122,255,.10), rgba(255,255,255,.92) 55%)"}},
+        h("p",{className:"sec",style:{textAlign:"center",letterSpacing:1}},"🎯 最適な兵種比率"),
+        h("div",{style:{display:"flex",justifyContent:"center",marginTop:8,marginBottom:20}},
+          h("div",{style:{position:"relative",width:152,height:152}},
+            h("div",{style:{width:152,height:152,borderRadius:"50%",background:conic,boxShadow:"0 10px 28px rgba(0,0,0,.18)"}}),
+            h("div",{style:{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:92,height:92,borderRadius:"50%",background:"rgba(255,255,255,.97)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:3,boxShadow:"0 2px 8px rgba(0,0,0,.08)"}},
+              h("div",{style:{fontSize:9,color:"#8e8e93",letterSpacing:2,fontWeight:700}},"OPTIMAL"),
+              h("div",{style:{fontSize:14,fontWeight:800,color:"#000",textAlign:"center",lineHeight:1.6}},"歩"+opt.inf,h("br",null),"騎"+opt.cav+" 弓"+opt.arc)
             )
-          ),
-          h("div",{style:{flex:1,display:"flex",flexDirection:"column",gap:16}},
-            [{lb:"歩兵",em:"🛡️",val:opt.inf,col:IC.inf,bg:IB.inf},
-             {lb:"騎兵",em:"🐎",val:opt.cav,col:IC.cav,bg:IB.cav},
-             {lb:"弓兵",em:"🏹",val:opt.arc,col:IC.arc,bg:IB.arc}
-            ].map(function(d){
-              return h("div",{key:d.lb},
-                h("div",{className:"flex-between",style:{marginBottom:6}},
-                  h("div",{style:{display:"flex",alignItems:"center",gap:6,fontSize:13,color:"#6e6e73"}},h("div",{style:{width:10,height:10,borderRadius:"50%",background:d.col,flexShrink:0}}),d.em," ",d.lb),
-                  h("span",{style:{fontSize:22,fontWeight:700,color:d.col}},d.val,h("span",{style:{fontSize:13,fontWeight:400}},"%"))
-                ),
-                h("div",{style:{height:6,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden"}},h("div",{style:{width:d.val+"%",height:"100%",background:d.col,borderRadius:99}}))
-              );
-            })
           )
         ),
-        h("div",{className:"sep"}),
-        h("p",{className:"sec"},"効率スコア"),
-        h("div",{style:{display:"flex",flexDirection:"column",gap:16}},
-          [{lb:"🛡️ 歩兵",note:"×⅓",w:calc.wI,col:IC.inf},{lb:"🐎 騎兵",note:"×1",w:calc.wC,col:IC.cav},{lb:"🏹 弓兵",note:"×4/3",w:calc.wA,col:IC.arc}].map(function(row){
-            return h("div",{key:row.lb},
-              h("div",{className:"flex-between",style:{marginBottom:8}},h("span",null,row.lb," ",h("span",{style:{fontSize:11,color:"#8e8e93"}},row.note)),h("span",{style:{fontWeight:600,color:row.col}},row.w.toFixed(3))),
-              h("div",{style:{height:6,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden"}},h("div",{style:{width:(row.w/calc.maxW*100)+"%",height:"100%",background:row.col,borderRadius:99}}))
+        h("div",{style:{display:"flex",gap:8}},
+          [{lb:"歩兵",em:"🛡️",val:opt.inf,col:IC.inf,bg:IB.inf},
+           {lb:"騎兵",em:"🐎",val:opt.cav,col:IC.cav,bg:IB.cav},
+           {lb:"弓兵",em:"🏹",val:opt.arc,col:IC.arc,bg:IB.arc}
+          ].map(function(d){
+            return h("div",{key:d.lb,style:{flex:1,padding:"14px 6px",borderRadius:16,background:d.bg,textAlign:"center"}},
+              h("div",{style:{fontSize:20,marginBottom:2}},d.em),
+              h("div",{style:{fontSize:21,fontWeight:800,color:d.col,lineHeight:1.1}},d.val,h("span",{style:{fontSize:12,fontWeight:600}},"%")),
+              h("div",{style:{fontSize:11,color:d.col,opacity:.75,marginTop:3,fontWeight:600}},d.lb)
+            );
+          })
+        )
+      ),
+      h("div",{className:"card",style:{marginTop:10}},
+        h("p",{className:"sec"},"⚡ 効率スコア"),
+        h("div",{style:{display:"flex",flexDirection:"column",gap:10}},
+          [{lb:"歩兵",em:"🛡️",note:"×⅓",w:calc.wI,col:IC.inf,bg:IB.inf},{lb:"騎兵",em:"🐎",note:"×1",w:calc.wC,col:IC.cav,bg:IB.cav},{lb:"弓兵",em:"🏹",note:"×4/3",w:calc.wA,col:IC.arc,bg:IB.arc}].map(function(row){
+            return h("div",{key:row.lb,style:{padding:"10px 12px",borderRadius:14,background:row.bg}},
+              h("div",{className:"flex-between",style:{marginBottom:7}},
+                h("span",{style:{fontSize:13,fontWeight:700,color:row.col}},row.em+" "+row.lb+" ",h("span",{style:{fontSize:11,fontWeight:500,color:"#8e8e93"}},row.note)),
+                h("span",{style:{fontWeight:800,fontSize:16,color:row.col}},row.w.toFixed(3))
+              ),
+              h("div",{style:{height:7,borderRadius:99,background:"rgba(255,255,255,.65)",overflow:"hidden"}},h("div",{style:{width:(row.w/calc.maxW*100)+"%",height:"100%",background:row.col,borderRadius:99}}))
             );
           })
         ),
-        h("div",{style:{marginTop:20,padding:"14px 16px",borderRadius:12,background:"rgba(255,149,0,.1)",fontSize:13,color:"#9a5f00",lineHeight:1.7}},
-          "💡 この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。"
+        h("div",{style:{marginTop:16,display:"flex",gap:10,alignItems:"flex-start",padding:"14px 16px",borderRadius:14,background:"rgba(255,149,0,.1)"}},
+          h("span",{style:{fontSize:17,flexShrink:0,lineHeight:1.4}},"💡"),
+          h("p",{style:{fontSize:13,color:"#9a5f00",lineHeight:1.7}},"この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。")
         )
       ),
       h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
@@ -902,13 +905,14 @@ function ToolJoiner(props){
     ),
 
     step===3&&h("div",{className:"step-content"},null,
-      h("div",{style:{display:"flex",gap:6,marginBottom:16}},
+      h("div",{style:{display:"flex",gap:4,marginBottom:16,padding:4,borderRadius:16,background:"rgba(118,118,128,.12)"}},
         [{v:"even",l:"均等配分"},{v:"biased",l:"偏り配分"},{v:"none",l:"手動確認"}].map(function(m){
           var on=mode===m.v;
           return h("button",{key:m.v,onClick:(function(v){return function(){setMode(v);};})(m.v),
-            style:{flex:1,padding:"10px 4px",borderRadius:12,border:"none",cursor:"pointer",fontFamily:"inherit",
-              fontSize:13,fontWeight:600,
-              background:on?"#007aff":"rgba(118,118,128,.12)",
+            style:{flex:1,padding:"9px 4px",borderRadius:12,border:"none",cursor:"pointer",fontFamily:"inherit",
+              fontSize:13,fontWeight:700,transition:"background .15s ease,color .15s ease",
+              background:on?"#007aff":"transparent",
+              boxShadow:on?"0 2px 8px rgba(0,122,255,.35)":"none",
               color:on?"#fff":"#6e6e73"}},m.l);
         })
       ),
@@ -921,9 +925,9 @@ function ToolJoiner(props){
           calcResult&&calcResult.results.map(function(res,i){
             if(!res) return null;
             return h("div",{key:i,className:"card"},
-              h("div",{className:"flex-between"},
-                h("p",{style:{fontSize:15,fontWeight:600}},ML[i]),
-                h("div",{style:{fontSize:13,color:hasShortage?"#ff3b30":"#34c759",fontWeight:600}},
+              h("div",{className:"flex-between",style:{marginBottom:12}},
+                h("p",{style:{fontSize:15,fontWeight:700}},ML[i]),
+                h("div",{style:{fontSize:12,fontWeight:700,padding:"4px 10px",borderRadius:99,background:hasShortage?"rgba(255,59,48,.12)":"rgba(52,199,89,.12)",color:hasShortage?"#ff3b30":"#34c759"}},
                   hasShortage?"▼ 保有数不足":"✓ 保有数OK"
                 )
               ),
@@ -932,10 +936,10 @@ function ToolJoiner(props){
                  {em:"🐎",lb:"騎兵",n:res.cav,pct:res.cav>0?Math.round(res.cav/res.total*100):0,col:IC.cav,bg:IB.cav},
                  {em:"🏹",lb:"弓兵",n:res.arc,pct:res.arc>0?Math.round(res.arc/res.total*100):0,col:IC.arc,bg:IB.arc}
                 ].map(function(t){
-                  return h("div",{key:t.lb,style:{flex:1,padding:"10px 8px",borderRadius:12,background:t.bg,textAlign:"center"}},
-                    h("div",{style:{fontSize:11,color:t.col,fontWeight:600,marginBottom:2}},t.em+" "+t.lb),
-                    h("div",{style:{fontSize:20,fontWeight:700,color:t.col,lineHeight:1.1}},t.pct,h("span",{style:{fontSize:13,fontWeight:600}},"%")),
-                    h("div",{style:{fontSize:11,color:t.col,opacity:.7,marginTop:2}},fmt(t.n)+" 人")
+                  return h("div",{key:t.lb,style:{flex:1,padding:"12px 8px",borderRadius:16,background:t.bg,textAlign:"center"}},
+                    h("div",{style:{fontSize:16,marginBottom:2}},t.em),
+                    h("div",{style:{fontSize:21,fontWeight:800,color:t.col,lineHeight:1.1}},t.pct,h("span",{style:{fontSize:12,fontWeight:600}},"%")),
+                    h("div",{style:{fontSize:11,color:t.col,opacity:.75,marginTop:3,fontWeight:600}},fmt(t.n)+" 人")
                   );
                 })
               ),
@@ -968,7 +972,7 @@ function ToolJoiner(props){
             );
           }),
           !calcResult&&h("div",{className:"toast toast-warn",style:{marginBottom:8}},"⚠️ 保有数または出征容量が入力されていません"),
-          calcResult&&h("div",{className:"card-hi"},
+          calcResult&&h("div",{className:"card-hi",style:{background:"linear-gradient(160deg, rgba(0,122,255,.10), rgba(255,255,255,.92) 55%)"}},
             h("p",{className:"sec"},mode==="none"?"保有数との差引き（全行軍合計）":"配分後の残り兵士"),
             h("div",{style:{display:"flex",gap:8}},
               [{em:"🛡️",lb:"歩兵",n:calcResult.left.inf,col:IC.inf,bg:IB.inf},
@@ -976,9 +980,9 @@ function ToolJoiner(props){
                {em:"🏹",lb:"弓兵",n:calcResult.left.arc,col:IC.arc,bg:IB.arc}
               ].map(function(t){
                 var neg=t.n<0;
-                return h("div",{key:t.lb,style:{flex:1,padding:"10px 6px",borderRadius:12,background:neg?"rgba(255,59,48,.1)":t.bg,textAlign:"center"}},
-                  h("div",{style:{fontSize:11,color:neg?"#ff3b30":t.col,fontWeight:600,marginBottom:3}},t.em+" "+t.lb),
-                  h("div",{style:{fontSize:16,fontWeight:700,color:neg?"#ff3b30":t.col}},(neg?"▼ -":"")+fmt(t.n))
+                return h("div",{key:t.lb,style:{flex:1,padding:"12px 6px",borderRadius:16,background:neg?"rgba(255,59,48,.1)":t.bg,textAlign:"center"}},
+                  h("div",{style:{fontSize:11,color:neg?"#ff3b30":t.col,fontWeight:700,marginBottom:4}},t.em+" "+t.lb),
+                  h("div",{style:{fontSize:17,fontWeight:800,color:neg?"#ff3b30":t.col}},(neg?"▼ -":"")+fmt(t.n))
                 );
               })
             ),
