@@ -1049,7 +1049,7 @@ function GuideHost(props){
     {s:"S4",inf:"アマデウス",cav:"ペーラ",arc:"ローザ"},
     {s:"S5",inf:"アマデウス",cav:"スルード",arc:"ビビアン"},
     {s:"S6",inf:"アマデウス",cav:"スルード",arc:"ヤン"},
-    {s:"S7",inf:"アマデウス",cav:"アイヴァ",arc:"レン&ロン"}
+    {s:"S7",inf:"アマデウス",cav:"アイヴァ",arc:"ヤン"}
   ];
   return h("div",{style:{paddingBottom:80}},
     
@@ -1089,6 +1089,9 @@ function GuideHost(props){
         "生来スキル：殺傷力・HP +15%（常時発動）",h("br",null),
         "全3スキルが確定バフ",h("br",null),
         h("strong",null,"→ S1から最後まで一生使える最優先英雄")
+      ),
+      h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(118,118,128,.08)",fontSize:12,color:"#3a3a3c",lineHeight:1.7,marginBottom:12}},
+        "歩兵で「集結を率いるための攻撃系ウィジェット」を持つのはアマデウスとヘルガの2体だけ。それ以降に登場した歩兵英雄（ゾーイ・エリック・アルカ・龍飛・トリトン・チャールズなど）は防衛・駐屯用ウィジェットのため、集結リーダーの歩兵としては非推奨です。"
       ),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginBottom:12,lineHeight:1.6}},"アマデウス＋自分のシーズンの弓英雄の組み合わせが基本。"),
       HOST_HEROES.map(function(hero){
@@ -1133,7 +1136,7 @@ function GuideHost(props){
         )
       ),
       h("div",{style:{marginTop:10,fontSize:12,color:"#8e8e93",lineHeight:1.6}},"※アマデウスは全シーズン共通で最優先。歩兵で集結用の攻撃ウィジェットを持つのはアマデウスとヘルガのみのため、アマデウス未所持の場合はヘルガで代用してください。ホストの英雄は装備・星もフルに効くので、☆5・専用装備までしっかり育てる価値があります。"),
-      h("div",{style:{marginTop:8,fontSize:12,color:"#8e8e93",lineHeight:1.6}},"※トリトン（S6）やチャールズ（S7）など各シーズンの新歩兵英雄は駐屯・防衛特化のため、集結リーダーの歩兵としては非推奨です。")
+      h("div",{style:{marginTop:8,fontSize:12,color:"#8e8e93",lineHeight:1.6}},"※トリトン（S6）やチャールズ（S7）など各シーズンの新歩兵英雄は駐屯・防衛特化のため、集結リーダーの歩兵としては非推奨です。ソフィア（S6・騎兵）とレン&ロン（S7・弓兵）も攻撃用ウィジェットを持たないため、その前のシーズンの英雄（スルード・ヤン）が引き続き最有力です。")
     ),
 
     h("div",{className:"card"},
