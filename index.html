@@ -956,15 +956,15 @@ function ToolJoiner(props){
                     h("div",{className:"flex-between"},
                       h("span",{style:{fontSize:13,color:t.col,fontWeight:600}},t.em+" "+t.lb),
                       h("div",{style:{textAlign:"right"}},
-                        h("div",{style:{fontSize:14,fontWeight:700,color:ok?"#1a7a33":"#c0392b"}},
+                        h("div",{style:{fontSize:14,fontWeight:700,color:ok?"#12897d":"#e2574c"}},
                           ok?"✓ 足りる":"▼ "+fmt(lack)+"人 不足"
                         ),
                         h("div",{style:{fontSize:11,color:"#8e8e93"}},"必要:"+fmt(t.need)+"　保有:"+fmt(t.have)+"　全行軍計:"+fmt(t.totalNeed))
                       )
                     ),
                     h("div",{style:{height:6,borderRadius:99,background:"rgba(118,118,128,.12)",overflow:"hidden",display:"flex"}},
-                      h("div",{style:{width:greenPct+"%",height:"100%",background:"rgba(52,199,89,.55)",flexShrink:0}}),
-                      !ok&&h("div",{style:{flex:1,height:"100%",background:"rgba(255,59,48,.45)"}})
+                      h("div",{style:{width:greenPct+"%",height:"100%",background:"rgba(64,224,208,.55)",flexShrink:0}}),
+                      !ok&&h("div",{style:{flex:1,height:"100%",background:"rgba(255,138,122,.5)"}})
                     )
                   );
                 })
