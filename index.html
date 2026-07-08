@@ -425,8 +425,7 @@ function GuideAccordion(props){
     h("div",{onClick:function(){setOpen(!open);},className:"accordion-toggle"},
       h("div",{className:"flex-row"},
         h("div",{style:{width:10,height:10,borderRadius:"50%",background:color,flexShrink:0}}),
-        h("span",{style:{fontSize:13,fontWeight:600,color:"#000"}},label),
-        !open&&h("span",{style:{fontSize:11,color:color,fontWeight:600}},"タップして手順を見る")
+        h("span",{style:{fontSize:13,fontWeight:600,color:"#000"}},label)
       ),
       h("span",{className:"accordion-chevron",style:{transform:open?"rotate(180deg)":"none"}},"▼")
     ),
@@ -660,7 +659,10 @@ function ToolHost(props){
           h("p",{style:{fontSize:13,color:"#9a5f00",lineHeight:1.7}},"この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。")
         )
       ),
-      h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(1);}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
+      )
     )
   );
 }
@@ -1021,7 +1023,10 @@ function ToolJoiner(props){
               "学院Lv"+villaLv+"：＋"+(villaLv*3000).toLocaleString()+"人"
             )
           ),
-          h("button",{className:"btn",onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
+          h("div",{style:{display:"flex",gap:10,marginTop:12}},
+            h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(2);}},"戻る"),
+            h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
+          )
         );
       })()
     )
