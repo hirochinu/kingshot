@@ -256,6 +256,34 @@ input[type=number]:focus{outline:none}
 .list-row:active{background:rgba(0,0,0,.05)}
 .list-row.on{background:var(--primary-light)}
 
+.accordion-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:11px 13px;
+  border-radius:10px;
+  background:rgba(255,255,255,.6);
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  cursor:pointer;
+  transition:background .12s ease,box-shadow .12s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.accordion-toggle:hover{background:rgba(255,255,255,.9)}
+.accordion-toggle:active{background:rgba(0,0,0,.04);box-shadow:none}
+.accordion-chevron{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:rgba(118,118,128,.14);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  color:#8e8e93;
+  flex-shrink:0;
+  transition:transform .15s ease;
+}
+
 .sep{height:.5px;background:var(--text-muted);margin:14px 0}
 
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -312,7 +340,7 @@ var TIERS=[
   {v:"tg5tg7",l:"黄金5〜7",b:1.21}
 ];
 var ROSA_LIST=[
-  {lv:0,label:"使用していない",sub:"ローザを集結主に使っていない",b:0},
+  {lv:0,label:"使用していない",sub:"ローザを集結リーダーに使っていない",b:0},
   {lv:1,label:"遠征：ゴールデン・リズム Lv.1",sub:"弓兵ATK +6%",b:6},
   {lv:2,label:"遠征：ゴールデン・リズム Lv.2",sub:"弓兵ATK +12%",b:12},
   {lv:3,label:"遠征：ゴールデン・リズム Lv.3",sub:"弓兵ATK +18%",b:18},
@@ -394,12 +422,13 @@ function GuideAccordion(props){
   var label=props.label,steps=props.steps,color=props.color||"#007aff";
   var so=React.useState(false);var open=so[0],setOpen=so[1];
   return h("div",{style:{marginBottom:8}},
-    h("div",{onClick:function(){setOpen(!open);},className:"flex-between"},
+    h("div",{onClick:function(){setOpen(!open);},className:"accordion-toggle"},
       h("div",{className:"flex-row"},
         h("div",{style:{width:10,height:10,borderRadius:"50%",background:color,flexShrink:0}}),
-        h("span",{style:{fontSize:13,fontWeight:600,color:"#000"}},label)
+        h("span",{style:{fontSize:13,fontWeight:600,color:"#000"}},label),
+        !open&&h("span",{style:{fontSize:11,color:color,fontWeight:600}},"タップして手順を見る")
       ),
-      h("span",{style:{fontSize:12,color:"#8e8e93"}},open?"▲":"▼")
+      h("span",{className:"accordion-chevron",style:{transform:open?"rotate(180deg)":"none"}},"▼")
     ),
     open&&h("div",{style:{background:"rgba(118,118,128,.06)",borderRadius:"0 0 12px 12px",padding:"10px 14px"}},
       steps.map(function(g){
@@ -453,13 +482,13 @@ function PasteBonus(props){
     h("div",{style:{background:"rgba(0,122,255,.07)",borderRadius:14,padding:"14px 16px",marginBottom:12}},
       h("p",{style:{fontSize:13,fontWeight:600,color:"#007aff",marginBottom:12}},"📋 テキストの取得方法"),
       h(GuideAccordion,{label:"iOS",color:"#007aff",steps:[
-        {n:1,t:"野獣狩猟の戦闘結果メールを開く",s:"熊集結主に使う英雄で野獣狩りをした戦闘の結果メールを使用。最下部までスクロールしてボーナス詳細を表示"},
+        {n:1,t:"野獣狩猟の戦闘結果メールを開く",s:"熊集結リーダーに使う英雄で野獣狩りをした戦闘の結果メールを使用。最下部までスクロールしてボーナス詳細を表示"},
         {n:2,t:"ボーナス詳細画面のスクショを撮る",s:""},
         {n:3,t:"スクショから文字を長押し →「すべてを選択」→「コピー」",s:"クリップボードにコピーされます"},
         {n:4,t:"下のエリアに貼り付け",s:"自動でステータスを読み取ります"}
       ]}),
       h(GuideAccordion,{label:"Android",color:"#34c759",steps:[
-        {n:1,t:"野獣狩猟の戦闘結果メールを開く",s:"熊集結主に使う英雄で野獣狩りをした戦闘の結果メールを使用。最下部までスクロールしてボーナス詳細を表示"},
+        {n:1,t:"野獣狩猟の戦闘結果メールを開く",s:"熊集結リーダーに使う英雄で野獣狩りをした戦闘の結果メールを使用。最下部までスクロールしてボーナス詳細を表示"},
         {n:2,t:"ボーナス詳細画面のスクショを撮る",s:""},
         {n:3,t:"Googleレンズでスクショを読み取る",s:"",link:{href:"https://lens.google.com",label:"Googleレンズを開く"}},
         {n:4,t:"「テキスト」タブ →「すべてを選択」→「コピー」",s:"画面内の文字がすべて選択されます"},
@@ -532,7 +561,7 @@ function ToolHost(props){
 
     step===0&&h("div",{className:"step-content"},
       h("p",{className:"sec"},"ボーナス詳細ステータス"),
-      h("p",{className:"text-sub",style:{marginBottom:8,lineHeight:1.6}},"熊集結主に使う英雄で野獣狩りをした戦闘の結果メール（最下部のボーナス詳細）から入力してください。"),
+      h("p",{className:"text-sub",style:{marginBottom:8,lineHeight:1.6}},"熊集結リーダーに使う英雄で野獣狩りをした戦闘の結果メール（最下部のボーナス詳細）から入力してください。"),
       h("div",{className:"card"},
         h("p",{className:"sec"},"テキスト貼り付けで自動入力"),
         h(PasteBonus,{onResult:applyParsed}),
@@ -569,7 +598,7 @@ function ToolHost(props){
           )
         ),
         h("p",{className:"sec"},"ローザの遠征スキル「ゴールデン・リズム」"),
-        h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.6}},"ローザを集結主に使用している場合のみ設定してください。弓兵ATKが強化されるため最適な兵種比率が変わります。"),
+        h("p",{className:"text-sub",style:{marginBottom:12,lineHeight:1.6}},"ローザを集結リーダーに使用している場合のみ設定してください。弓兵ATKが強化されるため最適な兵種比率が変わります。"),
         h("div",{className:"dropdown-wrap"},
           h("select",{className:"dropdown",value:rosa,
             onChange:function(ev){setRosa(parseInt(ev.target.value,10));}},
@@ -1019,14 +1048,14 @@ function GuideHost(props){
   return h("div",{style:{paddingBottom:80}},
     
     h("div",{style:{marginBottom:16}},
-      h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結主（ホスト）ガイド"),
+      h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結リーダー（ホスト）ガイド"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"集結を立てる人のための基本知識")
     ),
 
     h("div",{className:"card"},
       h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:12}},
         h("span",{style:{fontSize:18}},"❓"),
-        h("p",{style:{fontSize:15,fontWeight:700}},"集結主ってなに？")
+        h("p",{style:{fontSize:15,fontWeight:700}},"集結リーダーってなに？")
       ),
       h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.8,marginBottom:12}},
         "熊集結を立てる人のことです。ジョイナー（参加する人）との違いはここ："
@@ -1036,11 +1065,11 @@ function GuideHost(props){
           h("strong",null,"ジョイナー"),h("span",{style:{color:"#8e8e93"}}," → "),"左英雄のスキル1だけが有効"
         ),
         h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(0,122,255,.08)",fontSize:13,lineHeight:1.7,color:"#007aff"}},
-          h("strong",null,"集結主"),h("span",{style:{color:"#8e8e93"}}," → "),"英雄3体の全スキル・装備・専用装備・ペットが全部有効"
+          h("strong",null,"集結リーダー"),h("span",{style:{color:"#8e8e93"}}," → "),"英雄3体の全スキル・装備・専用装備・ペットが全部有効"
         )
       ),
       h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(255,149,0,.1)",fontSize:13,color:"#9a5f00",lineHeight:1.7}},
-        "戦闘は集結主の強さを基準に計算されます。ホストが強いほど全員のダメージが伸びる仕組みなので、",h("strong",null,"全員で参加するのが理想です。")
+        "戦闘は集結リーダーの強さを基準に計算されます。ホストが強いほど全員のダメージが伸びる仕組みなので、",h("strong",null,"全員で参加するのが理想です。")
       )
     ),
 
@@ -1132,7 +1161,7 @@ function GuideHost(props){
         h("span",{style:{fontSize:12,color:"#6e6e73"}},"※歩兵は最低5,000体キープ。弓兵は熊に一番ダメージが出る兵種。")
       ),
       h("div",{style:{padding:"12px 14px",borderRadius:12,background:"rgba(52,199,89,.1)",fontSize:13,color:"#1a7a33",lineHeight:1.7,marginBottom:12}},
-        "💡 自分のステータスに合った最適比率は「熊集結主 兵士算出ツール」で計算できます。定番比率と比べてみましょう。"
+        "💡 自分のステータスに合った最適比率は「熊集結リーダー 兵士算出ツール」で計算できます。定番比率と比べてみましょう。"
       ),
       h("div",{style:{fontSize:13,color:"#8e8e93",lineHeight:1.6}},"熊集結は立てるのも参加するのも領主体力を消費しません（巨獣集結などとは別物）。")
     ),
@@ -1165,7 +1194,7 @@ function GuideJoiner(props){
     {rank:3,name:"インウー（弓SR）",skill:"殺傷力+25%",type:"殺傷系",note:"チェンコと同効果の代替"},
     {rank:4,name:"マーゴ（騎SSR・S4）",skill:"攻撃力+25%",type:"攻撃系",note:"あまねの代替・確定バフ"},
     {rank:5,name:"ビビアン（弓SR）",skill:"敵被ダメ+25%",type:"デバフ系",note:"敵被ダメ増加・デバフ型の乗算効果"},
-    {rank:6,name:"アマデウス",skill:"殺傷力・HP+15%常時",type:"—",note:"集結主優先・ジョイナーでは代替候補"}
+    {rank:6,name:"アマデウス",skill:"殺傷力・HP+15%常時",type:"—",note:"集結リーダー優先・ジョイナーでは代替候補"}
   ];
   var NG=["ゴードン","ファハド","ハワード"];
   return h("div",{style:{paddingBottom:80}},
@@ -1283,13 +1312,13 @@ function App(){
     ),
 
     h("p",{style:{fontSize:12,fontWeight:600,color:"#6e6e73",marginBottom:8,letterSpacing:".04em"}},"🐻 巨熊狩猟"),
-    h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"集結主"),
+    h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"集結リーダー"),
     h("div",{className:"list-group"},
       h("div",{className:"list-row",onClick:function(){setMode("host");}},
         h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"🎯"),
           h("div",null,
-            h("div",{style:{fontSize:15,fontWeight:600}},"熊集結主 兵士算出ツール"),
+            h("div",{style:{fontSize:15,fontWeight:600}},"熊集結リーダー 兵士算出ツール"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"最適な兵種比率を計算")
           )
         ),
@@ -1299,7 +1328,7 @@ function App(){
         h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"📖"),
           h("div",null,
-            h("div",{style:{fontSize:15,fontWeight:600}},"熊集結主ガイド"),
+            h("div",{style:{fontSize:15,fontWeight:600}},"熊集結リーダーガイド"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"英雄・容量・出陣前チェックなど")
           )
         ),
