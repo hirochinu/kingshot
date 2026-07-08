@@ -656,7 +656,7 @@ function ToolHost(props){
         ),
         h("div",{style:{marginTop:16,display:"flex",gap:10,alignItems:"flex-start",padding:"14px 16px",borderRadius:14,background:"rgba(255,149,0,.1)"}},
           h("span",{style:{fontSize:17,flexShrink:0,lineHeight:1.4}},"💡"),
-          h("p",{style:{fontSize:13,color:"#9a5f00",lineHeight:1.7}},"この比率をジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。")
+          h("p",{style:{fontSize:13,color:"#9a5f00",lineHeight:1.7}},"この比率を集結ジョイナーにも共有しよう！同じ兵種比率で参加することで、その人自身のダメージが上がります。")
         )
       ),
       h("div",{style:{display:"flex",gap:10,marginTop:12}},
@@ -745,7 +745,7 @@ function ToolJoiner(props){
   
     
     h("div",{style:{marginBottom:16}},
-      h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"ジョイナーの兵配分"),
+      h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"集結ジョイナーの兵配分"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"手持ち兵士を各行軍にどう配分するか算出します")
     ),
     h(Stepper,{step:step,setStep:setStep,labels:["兵士数入力","行軍設定","各行軍","結果"]}),
@@ -1063,11 +1063,11 @@ function GuideHost(props){
         h("p",{style:{fontSize:15,fontWeight:700}},"集結リーダーってなに？")
       ),
       h("p",{style:{fontSize:13,color:"#3a3a3c",lineHeight:1.8,marginBottom:12}},
-        "熊集結を立てる人のことです。ジョイナー（参加する人）との違いはここ："
+        "熊集結を立てる人のことです。集結ジョイナー（参加する人）との違いはここ："
       ),
       h("div",{style:{display:"flex",flexDirection:"column",gap:8,marginBottom:12}},
         h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(118,118,128,.08)",fontSize:13,lineHeight:1.7}},
-          h("strong",null,"ジョイナー"),h("span",{style:{color:"#8e8e93"}}," → "),"左英雄のスキル1だけが有効"
+          h("strong",null,"集結ジョイナー"),h("span",{style:{color:"#8e8e93"}}," → "),"左英雄のスキル1だけが有効"
         ),
         h("div",{style:{padding:"10px 14px",borderRadius:12,background:"rgba(0,122,255,.08)",fontSize:13,lineHeight:1.7,color:"#007aff"}},
           h("strong",null,"集結リーダー"),h("span",{style:{color:"#8e8e93"}}," → "),"英雄3体の全スキル・装備・専用装備・ペットが全部有効"
@@ -1194,18 +1194,18 @@ function GuideHost(props){
 function GuideJoiner(props){
   var onBack=props.onBack;
   var HEROES=[
-    {rank:1,name:"チェンコ（騎SR）",skill:"殺傷力+25%",type:"殺傷系",note:"ジョイナー最強。確定発動"},
+    {rank:1,name:"チェンコ（騎SR）",skill:"殺傷力+25%",type:"殺傷系",note:"集結ジョイナー最強。確定発動"},
     {rank:2,name:"あまね（弓SR）",skill:"攻撃力+25%",type:"攻撃系",note:"チェンコと掛け算で伸びる"},
     {rank:3,name:"インウー（弓SR）",skill:"殺傷力+25%",type:"殺傷系",note:"チェンコと同効果の代替"},
     {rank:4,name:"マーゴ（騎SSR・S4）",skill:"攻撃力+25%",type:"攻撃系",note:"あまねの代替・確定バフ"},
     {rank:5,name:"ビビアン（弓SR）",skill:"敵被ダメ+25%",type:"デバフ系",note:"敵被ダメ増加・デバフ型の乗算効果"},
-    {rank:6,name:"アマデウス",skill:"殺傷力・HP+15%常時",type:"—",note:"集結リーダー優先・ジョイナーでは代替候補"}
+    {rank:6,name:"アマデウス",skill:"殺傷力・HP+15%常時",type:"—",note:"集結リーダー優先・集結ジョイナーでは代替候補"}
   ];
   var NG=["ゴードン","ファハド","ハワード"];
   return h("div",{style:{paddingBottom:80}},
     
     h("div",{style:{marginBottom:16}},
-      h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊ジョイナー 左英雄指定ガイド"),
+      h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"熊集結ジョイナー 左英雄指定ガイド"),
       h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"初心者向け・熊集結ジョイナーの基本知識")
     ),
 
@@ -1272,8 +1272,8 @@ function GuideJoiner(props){
       ),
       [
         "バフ4枠の選定基準はスキル1のレベルだけ。Lv5必須（遠征スキルブック165個）。",
-        "星は☆4まで（Lv5の上限解放に必要）。☆5・装備・他スキルはジョイナー性能に影響なし。",
-        "ここだけ投資すれば誰でも一流ジョイナーになれる、コスパ最高の強化ポイント。"
+        "星は☆4まで（Lv5の上限解放に必要）。☆5・装備・他スキルは集結ジョイナー性能に影響なし。",
+        "ここだけ投資すれば誰でも一流集結ジョイナーになれる、コスパ最高の強化ポイント。"
       ].map(function(line,i){
         return h("div",{key:i},
           h("span",{style:{color:"#34c759",fontSize:16,flexShrink:0,lineHeight:1.4}},"✓"),
@@ -1340,13 +1340,13 @@ function App(){
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
       )
     ),
-    h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"ジョイナー"),
+    h("p",{style:{fontSize:11,color:"#8e8e93",marginBottom:6}},"集結ジョイナー"),
     h("div",{className:"list-group"},
       h("div",{className:"list-row",onClick:function(){setMode("joiner");}},
         h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"🗡️"),
           h("div",null,
-            h("div",{style:{fontSize:15,fontWeight:600}},"熊ジョイナー 兵士算出ツール"),
+            h("div",{style:{fontSize:15,fontWeight:600}},"熊集結ジョイナー 兵士算出ツール"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"各行軍の兵配分を計算")
           )
         ),
@@ -1356,7 +1356,7 @@ function App(){
         h("div",{className:"flex-row"},
           h("span",{style:{fontSize:22}},"📖"),
           h("div",null,
-            h("div",{style:{fontSize:15,fontWeight:600}},"熊ジョイナーガイド"),
+            h("div",{style:{fontSize:15,fontWeight:600}},"熊集結ジョイナーガイド"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"左英雄指定・兵種比率・最適英雄など")
           )
         ),
