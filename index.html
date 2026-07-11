@@ -1033,6 +1033,877 @@ function ToolJoiner(props){
   );
 }
 
+// =========== PVP ツール ===========
+// 兵種はaltema.jp/kingshot/charalist（2026年7月8日更新版）の「兵種」列を正として分類。
+// king shot.txtの英雄スキル詳細表にあった兵種タグ（サロ=歩兵、ヒルデ=歩兵、ジェベル=弓兵、
+// ゾーイ=騎兵、ヘルガ=騎兵、ハワード=騎兵、ゴードン=歩兵）はAltemaの表記と食い違っており、
+// 2026-07-16にAltema基準へ修正（ゴードン・ヒルデ・ジェベル→騎兵／サロ→弓兵／
+// ハワード・ゾーイ・ヘルガ→歩兵）。
+// プルダウン表記：【レア度-世代】名前（効果タグ）。世代はking shot.txt（S1〜S7）、レア度・兵種はアルテマ基準。
+// 効果タグ＝本ツールに反映される無条件常時スキルの方向：（攻）攻撃/殺傷系、（防）防御/HP系、（攻防）両方、
+// （攻／確率）等＝スキルの方向はあるが確率・周期・条件付きのため数値反映なし、（採集）戦闘バフなし。
+// ジョイナーはSK1のみ有効のため、同じ英雄でもホストとタグが異なることがある。
+// 並び順：SSR新世代→旧世代→SR→R（見やすさ優先、2026-07-12ユーザー要望）
+var PVP_HERO_INF=[
+  {v:"none",l:"なし"},
+  {v:"charles",l:"【SSR-S7】チャールズ（防）"},{v:"triton",l:"【SSR-S6】トリトン（攻防）"},{v:"longfei",l:"【SSR-S5】龍飛（防）"},
+  {v:"alcar",l:"【SSR-S4】アルカ（攻／確率）"},{v:"eric",l:"【SSR-S3】エリック（防）"},{v:"zoe",l:"【SSR-S2】ゾーイ（攻）"},
+  {v:"amadeus",l:"【SSR-S1】アマデウス（攻）"},{v:"helga",l:"【SSR-S1】ヘルガ（攻）"},
+  {v:"howard",l:"【SR】ハワード（防）"},{v:"forst",l:"【R】フォルスト（採集）"},{v:"smith",l:"【R】スミス（採集）"}
+];
+var PVP_HERO_CAV=[
+  {v:"none",l:"なし"},
+  {v:"aiva",l:"【SSR-S7】アイヴァ（攻）"},{v:"sophia",l:"【SSR-S6】ソフィア（攻／確率）"},{v:"thrud",l:"【SSR-S5】スルード（攻防／確率）"},
+  {v:"margot",l:"【SSR-S4】マーゴ（攻）"},{v:"petra",l:"【SSR-S3】ペーラ（攻防／確率）"},{v:"hilde",l:"【SSR-S2】ヒルデ（攻防）"},
+  {v:"jabel",l:"【SSR-S1】ジェベル（攻）"},
+  {v:"chenko",l:"【SR】チェンコ（攻）"},{v:"fahd",l:"【SR】ファハド（防）"},{v:"gordon",l:"【SR】ゴードン（攻防）"},{v:"edwin",l:"【R】エドウィン（採集）"}
+];
+var PVP_HERO_ARC=[
+  {v:"none",l:"なし"},
+  {v:"renron",l:"【SSR-S7】レン&ロン（攻）"},{v:"yang",l:"【SSR-S6】ヤン（攻／確率）"},{v:"vivian",l:"【SSR-S5】ビビアン（攻）"},
+  {v:"rosa",l:"【SSR-S4】ローザ（攻）"},{v:"jaeger",l:"【SSR-S3】イェーガー（防）"},{v:"marlin",l:"【SSR-S2】マリン（攻／確率）"},
+  {v:"saul",l:"【SSR-S1】サロ（攻防）"},
+  {v:"amane",l:"【SR】あまね（攻）"},{v:"yeonwoo",l:"【SR】インウー（攻）"},{v:"quinn",l:"【SR】クイン（防）"},{v:"diana",l:"【SR】ダイアナ（採集）"},
+  {v:"olive",l:"【R】オリーブ（採集）"}
+];
+var PVP_HERO_JOINER=[
+  {v:"none",l:"なし"},
+  {v:"charles",l:"【SSR-S7】チャールズ（防）"},{v:"aiva",l:"【SSR-S7】アイヴァ（攻）"},{v:"renron",l:"【SSR-S7】レン&ロン（攻）"},
+  {v:"triton",l:"【SSR-S6】トリトン（防）"},{v:"sophia",l:"【SSR-S6】ソフィア（攻／確率）"},{v:"yang",l:"【SSR-S6】ヤン（攻／確率）"},
+  {v:"thrud",l:"【SSR-S5】スルード（攻防／確率）"},{v:"margot",l:"【SSR-S4】マーゴ（攻）"},{v:"eric",l:"【SSR-S3】エリック（防）"},
+  {v:"hilde",l:"【SSR-S2】ヒルデ（攻防）"},{v:"amadeus",l:"【SSR-S1】アマデウス（攻）"},{v:"saul",l:"【SSR-S1】サロ（防）"},
+  {v:"chenko",l:"【SR】チェンコ（攻）"},{v:"amane",l:"【SR】あまね（攻）"},{v:"yeonwoo",l:"【SR】インウー（攻）"},
+  {v:"gordon",l:"【SR】ゴードン（防）"},{v:"howard",l:"【SR】ハワード（防）"},{v:"quinn",l:"【SR】クイン（防）"},
+  {v:"fahd",l:"【SR】ファハド（防）"},{v:"diana",l:"【SR】ダイアナ（採集）"},
+  {v:"forst",l:"【R】フォルスト（採集）"},{v:"smith",l:"【R】スミス（採集）"},{v:"edwin",l:"【R】エドウィン（採集）"},{v:"olive",l:"【R】オリーブ（採集）"}
+];
+
+function pvpHeroLabel(list,v){var f=list.find(function(o){return o.v===v;});return f?f.l:v;}
+
+// 確定済みの数値のみ自動加算。未検証の英雄は選択できるが数値には反映せず注記のみ表示する。
+function pvpSideBonus(side){
+  var atkAdd=0,letAdd=0,heaAdd=0,defAdd=0,armyMult=1,notes=[],rosaArcBonus=0;
+  function unconf(label){notes.push({t:label,s:"⚠️ 数値未検証のため計算には反映されていません",warn:true});}
+
+  if(side.heroInf==="charles"){
+    defAdd+=40;
+    notes.push({t:"チャールズ（歩兵ホスト）",s:"防御系+40%相当（「パンツァーオーラ」敵殺傷力-20%＋「鋼鉄の身体」被ダメ-20%・いずれも無条件常時）。「愛と正義」総HP25%回復は回復系のため未反映"});
+  } else if(side.heroInf==="amadeus"){
+    letAdd+=25;atkAdd+=25;
+    notes.push({t:"アマデウス（歩兵ホスト）",s:"殺傷力+25%・攻撃力+25%（遠征スキル「臨戦態勢」「剣術指導」最大値。「不義の一撃」＝40%確率で与ダメ+50%は確率依存のため未反映）"});
+  } else if(side.heroInf==="eric"){
+    defAdd+=40;heaAdd+=25;
+    notes.push({t:"エリック（歩兵ホスト）",s:"被ダメ減+40%相当（「浄化」敵ATK-20%＋「意志」被ダメ-20%）・HP+25%（「鼓舞」）（いずれも無条件常時）"});
+  } else if(side.heroInf==="longfei"){
+    defAdd+=25;
+    notes.push({t:"龍飛（歩兵ホスト）",s:"防御力+25%（「剛筋頑健」・無条件常時。「天昇豪胆」被ダメ-50%＝40%確率、「杯投烈脚」追加ダメ200%＝25%確率は未反映）"});
+  } else if(side.heroInf==="howard"){
+    defAdd+=40;
+    notes.push({t:"ハワード（歩兵ホスト）",s:"被ダメ減+40%相当（「プロテクト」被ダメ-20%＋「弱体化打撃」敵ATK-20%・いずれも無条件常時）"});
+  } else if(side.heroInf==="zoe"){
+    atkAdd+=25;
+    notes.push({t:"ゾーイ（歩兵ホスト）",s:"攻撃力+25%（「感情支配」・無条件常時。「リッジワウンド」「無限テクニック」は確率依存のため未反映）"});
+  } else if(side.heroInf==="helga"){
+    atkAdd+=25;letAdd+=25;
+    notes.push({t:"ヘルガ（歩兵ホスト）",s:"攻撃力+25%・殺傷力+25%（「英霊の叫び」「荒野の均衡」・いずれも無条件常時。「守護者の誓い」被ダメ-50%＝40%確率は未反映）"});
+  } else if(side.heroInf==="alcar"){
+    unconf(pvpHeroLabel(PVP_HERO_INF,side.heroInf)+"（歩兵ホスト）");
+    notes.push({t:"アルカ（歩兵ホスト）補足",s:"「チャンピオン・ウィル」歩兵与ダメ+100%・騎兵弓兵与ダメ+10%は無条件常時で数値も確定していますが、兵種によって効果が違う（歩兵のみ突出）ため本ツールの簡易モデルでは反映できません（全兵種一律加算の仕組みのため）",warn:true});
+  } else if(side.heroInf==="triton"){
+    defAdd+=25;atkAdd+=30;
+    notes.push({t:"トリトン（歩兵ホスト）",s:"防御力+25%・与ダメ+30%（「律令の力」「戦争の力」・いずれも無条件常時・全兵種共通。「誓約の力」歩兵HP+20%/騎兵弓兵HP+30%は兵種別数値のため未反映）"});
+  } else if(side.heroInf==="forst"||side.heroInf==="smith"){
+    unconf(pvpHeroLabel(PVP_HERO_INF,side.heroInf)+"（歩兵ホスト）");
+    notes.push({t:pvpHeroLabel(PVP_HERO_INF,side.heroInf)+"（歩兵ホスト）補足",s:"資源採集特化の英雄で、遠征スキルは資源生産・採集速度のみ（戦闘バフなし）。計算には反映されません",warn:true});
+  } else if(side.heroInf&&side.heroInf!=="none"){
+    unconf(pvpHeroLabel(PVP_HERO_INF,side.heroInf)+"（歩兵ホスト）");
+  }
+
+  if(side.heroCav==="aiva"){
+    atkAdd+=25;letAdd+=25;
+    notes.push({t:"アイヴァ（騎兵ホスト）",s:"攻撃+25%相当（「アナライズ」敵防御力-25%）・殺傷力+25%（「クール&ホット」）（いずれも無条件常時）。「ライト&シャドウ」被ダメ+50%は4ターン毎の周期発動のため未反映"});
+  } else if(side.heroCav==="chenko"){
+    letAdd+=25;
+    notes.push({t:"チェンコ（騎兵ホスト）",s:"殺傷力+25%（skill1。「アーマー」被ダメージ-20%は未反映）"});
+  } else if(side.heroCav==="margot"){
+    atkAdd+=25;
+    notes.push({t:"マーゴ（騎兵ホスト）",s:"攻撃力+25%（skill1。「タクティクス」20%回避・「トリックテクニック」騎兵25%確率で200%追加ダメは確率依存のため未反映）"});
+  } else if(side.heroCav==="fahd"){
+    defAdd+=20;
+    notes.push({t:"ファハド（騎兵ホスト）",s:"敵与ダメ減+20%相当（「サンドシェード」・無条件常時）"});
+  } else if(side.heroCav==="petra"){
+    unconf(pvpHeroLabel(PVP_HERO_CAV,side.heroCav)+"（騎兵ホスト）");
+    notes.push({t:"ペーラ（騎兵ホスト）補足",s:"遠征スキル3つ（ドゥーム/ラッキーカード/ガーディアンカード）が全て確率発動のため、無条件で足せる数値がありません",warn:true});
+  } else if(side.heroCav==="thrud"){
+    unconf(pvpHeroLabel(PVP_HERO_CAV,side.heroCav)+"（騎兵ホスト）");
+    notes.push({t:"スルード（騎兵ホスト）補足",s:"「ファナティック」被ダメ-15%/与ダメ+15%は無条件常時ですが対象が歩兵・弓兵限定（騎兵は対象外）で本ツールでは反映できません。他2スキルは確率依存のため未反映",warn:true});
+  } else if(side.heroCav==="gordon"){
+    heaAdd+=25;atkAdd+=25;
+    notes.push({t:"ゴードン（騎兵ホスト）",s:"HP+25%・攻撃力+25%（「幸せグルメ」「暴言」・いずれも無条件常時）"});
+  } else if(side.heroCav==="hilde"){
+    atkAdd+=15;defAdd+=10;
+    notes.push({t:"ヒルデ（騎兵ホスト）",s:"攻撃力+15%・防御力+10%（「苦行」・無条件常時。「ポーション注入」「意志の試練」は確率依存のため未反映）"});
+  } else if(side.heroCav==="jabel"){
+    letAdd+=25;
+    notes.push({t:"ジェベル（騎兵ホスト）",s:"殺傷力+25%（「戦乙女」・無条件常時。「赤き旗」「勇姿」は確率依存のため未反映）"});
+  } else if(side.heroCav==="sophia"){
+    unconf(pvpHeroLabel(PVP_HERO_CAV,side.heroCav)+"（騎兵ホスト）");
+    notes.push({t:"ソフィア（騎兵ホスト）補足",s:"遠征スキル3つ（コントラクト・バインド＝確率発動／パニック・ダメージ／パニック・ジエンド＝いずれも周期発動や特定状態の敵限定）が全て条件付きのため、無条件で足せる数値がありません",warn:true});
+  } else if(side.heroCav==="edwin"){
+    unconf(pvpHeroLabel(PVP_HERO_CAV,side.heroCav)+"（騎兵ホスト）");
+    notes.push({t:"エドウィン（騎兵ホスト）補足",s:"資源採集特化の英雄で、遠征スキルは資源生産・採集速度のみ（戦闘バフなし）。計算には反映されません",warn:true});
+  } else if(side.heroCav&&side.heroCav!=="none"){
+    unconf(pvpHeroLabel(PVP_HERO_CAV,side.heroCav)+"（騎兵ホスト）");
+  }
+
+  if(side.heroArc==="renron"){
+    atkAdd+=15;letAdd+=10;
+    notes.push({t:"レン&ロン（弓兵ホスト）",s:"攻撃力+15%・殺傷力+10%（「砲兵隊」・無条件常時）。「連続砲撃」（対弓+30%/対歩+25%＝兵種別与ダメ）と「ヘビィキャノン出撃」（50%確率で追加ダメ50%）は本ツールの一律加算モデルでは未反映"});
+  } else if(side.heroArc==="amane"){
+    atkAdd+=25;
+    notes.push({t:"あまね（弓兵ホスト）",s:"攻撃力+25%"});
+  } else if(side.heroArc==="yeonwoo"){
+    letAdd+=25;
+    notes.push({t:"インウー（弓兵ホスト）",s:"殺傷力+25%"});
+  } else if(side.heroArc==="vivian"){
+    armyMult*=1.25;
+    notes.push({t:"ビビアン（弓兵ホスト）",s:"相手の被ダメージ+25%を自軍の与ダメ倍率として換算"});
+  } else if(side.heroArc==="rosa"){
+    rosaArcBonus=(ROSA_LIST[side.rosaLv||0]||ROSA_LIST[0]).b;
+    if(rosaArcBonus>0) notes.push({t:"ローザ（弓兵ホスト）",s:"弓兵ATK ×"+(1+rosaArcBonus/100).toFixed(2)+"（遠征スキル「ゴールデン・リズム」Lv"+side.rosaLv+"）"});
+  } else if(side.heroArc==="quinn"){
+    defAdd+=20;
+    notes.push({t:"クイン（弓兵ホスト）",s:"被ダメ減+20%相当（「危険予知」・無条件常時。「弱点射撃」は確率依存のため未反映）"});
+  } else if(side.heroArc==="marlin"){
+    unconf(pvpHeroLabel(PVP_HERO_ARC,side.heroArc)+"（弓兵ホスト）");
+    notes.push({t:"マリン（弓兵ホスト）補足",s:"遠征スキル3つ（予測不能/ラム酒/強化ガンパウダー）が全て確率発動のため、無条件で足せる数値がありません",warn:true});
+  } else if(side.heroArc==="jaeger"){
+    heaAdd+=25;
+    notes.push({t:"イェーガー（弓兵ホスト）",s:"HP+25%（「フェスティバルソング」・無条件常時。他2スキルは確率依存のため未反映）"});
+  } else if(side.heroArc==="saul"){
+    defAdd+=10;heaAdd+=15;letAdd+=25;
+    notes.push({t:"サロ（弓兵ホスト）",s:"防御力+10%・HP+15%・殺傷力+25%（「特派訓練」「陣地戦の強者」・いずれも無条件常時）"});
+  } else if(side.heroArc==="yang"){
+    unconf(pvpHeroLabel(PVP_HERO_ARC,side.heroArc)+"（弓兵ホスト）");
+    notes.push({t:"ヤン（弓兵ホスト）補足",s:"「アバランチ」（追加ダメ100%・4ターン毎）は確定発動ですが周期発動で常時ではなく、他2スキルも確率・弓兵限定のため、無条件で足せる数値がありません",warn:true});
+  } else if(side.heroArc==="diana"){
+    unconf(pvpHeroLabel(PVP_HERO_ARC,side.heroArc)+"（弓兵ホスト）");
+    notes.push({t:"ダイアナ（弓兵ホスト）補足",s:"遠征スキルは領主体力消費軽減・出征速度上昇のみで戦闘バフなし。計算には反映されません",warn:true});
+  } else if(side.heroArc==="olive"){
+    unconf(pvpHeroLabel(PVP_HERO_ARC,side.heroArc)+"（弓兵ホスト）");
+    notes.push({t:"オリーブ（弓兵ホスト）補足",s:"資源採集特化の英雄で、遠征スキルは資源生産・採集速度のみ（戦闘バフなし）。計算には反映されません",warn:true});
+  } else if(side.heroArc&&side.heroArc!=="none"){
+    unconf(pvpHeroLabel(PVP_HERO_ARC,side.heroArc)+"（弓兵ホスト）");
+  }
+
+  ["j1","j2","j3","j4"].forEach(function(jk,idx){
+    var j=side[jk];
+    if(!j||j==="none") return;
+    var lbl="ジョイナー"+(idx+1);
+    if(j==="charles"){defAdd+=20;notes.push({t:"チャールズ（"+lbl+"）",s:"防御系+20%相当（SK1「パンツァーオーラ」敵殺傷力-20%・無条件常時）"});}
+    else if(j==="aiva"){atkAdd+=25;notes.push({t:"アイヴァ（"+lbl+"）",s:"攻撃+25%相当（SK1「アナライズ」敵防御力-25%・無条件常時）"});}
+    else if(j==="renron"){atkAdd+=15;letAdd+=10;notes.push({t:"レン&ロン（"+lbl+"）",s:"攻撃力+15%・殺傷力+10%（SK1「砲兵隊」・無条件常時）"});}
+    else if(j==="chenko"){letAdd+=25;notes.push({t:"チェンコ（"+lbl+"）",s:"殺傷力+25%"});}
+    else if(j==="amane"){atkAdd+=25;notes.push({t:"あまね（"+lbl+"）",s:"攻撃力+25%"});}
+    else if(j==="yeonwoo"){letAdd+=25;notes.push({t:"インウー（"+lbl+"）",s:"殺傷力+25%"});}
+    else if(j==="margot"){atkAdd+=25;notes.push({t:"マーゴ（"+lbl+"）",s:"攻撃力+25%"});}
+    else if(j==="amadeus"){letAdd+=25;notes.push({t:"アマデウス（"+lbl+"）",s:"殺傷力+25%（「臨戦態勢」）"});}
+    else if(j==="gordon"){defAdd+=25;notes.push({t:"ゴードン（"+lbl+"）",s:"被ダメ減+25%（コミュニティ検証値）"});}
+    else if(j==="hilde"){defAdd+=10;atkAdd+=15;notes.push({t:"ヒルデ（"+lbl+"）",s:"被ダメ減+10%・攻撃力+15%（コミュニティ検証値）"});}
+    else if(j==="saul"){defAdd+=10;notes.push({t:"サロ（"+lbl+"）",s:"被ダメ減+10%（コミュニティ検証値）"});}
+    else if(j==="howard"){defAdd+=20;notes.push({t:"ハワード（"+lbl+"）",s:"被ダメ減+20%（コミュニティ検証値）"});}
+    else if(j==="quinn"){defAdd+=20;notes.push({t:"クイン（"+lbl+"）",s:"被ダメ減+20%（コミュニティ検証値・ハワードと同一）"});}
+    else if(j==="fahd"){defAdd+=20;notes.push({t:"ファハド（"+lbl+"）",s:"敵与ダメ減+20%相当（コミュニティ検証値）"});}
+    else if(j==="eric"){defAdd+=20;notes.push({t:"エリック（"+lbl+"）",s:"敵与ダメ減+20%相当（コミュニティ検証値）"});}
+    else if(j==="triton"){defAdd+=25;notes.push({t:"トリトン（"+lbl+"）",s:"防御力+25%（SK1「律令の力」・無条件常時）"});}
+    else if(j==="thrud"){notes.push({t:"スルード（"+lbl+"）補足",s:"SK1「ファナティック」被ダメ-15%/与ダメ+15%は無条件常時ですが対象が歩兵・弓兵限定のため本ツールでは反映できません",warn:true});}
+    else if(j==="sophia"||j==="yang"){notes.push({t:pvpHeroLabel(PVP_HERO_JOINER,j)+"（"+lbl+"）補足",s:"SK1が確率発動または周期発動のため、無条件で足せる数値がありません",warn:true});}
+    else if(j==="diana"||j==="forst"||j==="smith"||j==="edwin"||j==="olive"){notes.push({t:pvpHeroLabel(PVP_HERO_JOINER,j)+"（"+lbl+"）補足",s:"戦闘に無関係な遠征スキル（資源・出征速度・領主体力系）のみのため計算には反映されません",warn:true});}
+    else {unconf(pvpHeroLabel(PVP_HERO_JOINER,j)+"（"+lbl+"）");}
+  });
+
+  return {atkAdd:atkAdd,letAdd:letAdd,heaAdd:heaAdd,defAdd:defAdd,armyMult:armyMult,rosaArcBonus:rosaArcBonus,notes:notes};
+}
+
+function pvpTypeFactor(side,bonus,t){
+  var atk=(parseFloat(side[t+"_atk"])||0)+bonus.atkAdd;
+  if(t==="arc"&&bonus.rosaArcBonus) atk=atk*(1+bonus.rosaArcBonus/100);
+  var let_=(parseFloat(side[t+"_let"])||0)+bonus.letAdd;
+  var def=(parseFloat(side[t+"_def"])||0)+bonus.defAdd;
+  var hea=(parseFloat(side[t+"_hea"])||0)+bonus.heaAdd;
+  var A=(1+atk/100)*(1+let_/100)*bonus.armyMult;
+  var D=(1+def/100)*(1+hea/100);
+  return {A:A,D:D};
+}
+
+var PVP_TYPES=[{k:"inf",l:"歩兵",em:"🛡️"},{k:"cav",l:"騎兵",em:"🐎"},{k:"arc",l:"弓兵",em:"🏹"}];
+
+// 簡易理論値による机上計算：Attack Factor/Defense Factor・√兵力補正（Army Min Factor）を
+// 兵種ミラー対戦（歩兵vs歩兵など）に適用した近似値。「兵種別の内訳」表示にのみ使用する
+// （総合有利度の算出には使わない。総合有利度は下記のラウンド制シミュレーションを使用）。
+// Army Min Factor（N0）は両陣営の「総兵力」のうち小さい方を使う（Frakinator本家の定義に準拠）。
+//
+// ===== 三すくみメカニクス（2026-07-10、KINGSHOT運営公式回答＋ゲーム内UI「奇襲」説明で確定）=====
+// 運営に直接問い合わせた結果、以下の仕様が判明した：
+//  ・歩兵は全兵種からのデフォルト攻撃対象（前衛）。
+//  ・歩兵→騎兵：与ダメ+10%、Tier7-10はさらに被ダメ-10%相当（歩兵が騎兵と交戦する時、常時二重ボーナス）
+//  ・弓兵→歩兵：与ダメ+10%、Tier7-10はさらに10%確率で連続攻撃（弓兵が歩兵と交戦する時、常時二重ボーナス）
+//  ・騎兵→弓兵：与ダメ+10%のみ。Tier7-10は「奇襲」＝20%の確率で歩兵を避けて弓兵を直接攻撃
+//    （歩兵が健在なら80%は歩兵にブロックされる。歩兵が不在なら無条件で弓兵に到達）
+// この「二重ボーナス（歩兵⇔騎兵・弓兵⇔歩兵）」と「単一＋条件付きボーナス（騎兵⇔弓兵）」の非対称性が、
+// 実測で見られた「歩兵vs騎兵100%・弓兵vs歩兵100%・騎兵vs弓兵56%（ほぼ互角）」を説明する。
+// さらに「歩兵不在なら騎兵は無条件で弓兵に到達する」仕様が、「騎兵+弓兵混合vs歩兵only→自分100%勝利
+// （弓兵が無傷で生還）」を説明する：弓兵が歩兵を素早く壊滅させるため、騎兵が歩兵と交戦する前に
+// 戦闘が終わってしまう。単純な点数加算では再現できないこの「戦況の時間的推移」を捉えるため、
+// 単一のスコア式ではなく、兵力を少しずつ減らしながら戦況を刻んでいくシミュレーションを行う。
+//
+// ===== 2026-07-11 全面再校正（Frakinator実機の自動収集データ22件で校正） =====
+// Frakinatorの自動操作に成功し（同一オリジンiframe内DOMへのJS直接入力）、
+// 実測22ケース（単体対決・混合構成・僅差ケースを網羅）を収集して再校正した。
+// 決定的な改善点は次の2つ：
+//  (1) 兵種別の「基礎ステータス」（Frakinator Theory-craftingタブ、T10）を流量計算に導入。
+//      ダメージ ∝ 攻撃側の基礎Atk ÷ 防御側の基礎HP。これにより
+//      「歩兵=硬い壁（Atk472/HP1416）・弓兵=脆い火力（Atk1888/HP354）」の非対称性が
+//      自然に再現され、混合構成での『前衛の後ろから弓兵が削り勝つ』動態が正しく出る。
+//      （弓→騎 1888/472=4.0、騎→弓 1416/354=4.0 で騎vs弓が構造的にほぼ互角＝実測56%とも整合）
+//  (2) 疑似モンテカルロ化：陣営全体の実効戦力に ±3%（σ=0.03、対数正規）の摂動を与えて
+//      PVP_MC_TRIALS回試行し、勝った回数の割合を勝率%として返す。運営回答にあった「装備・宝石・
+//      バフ等の隠れ変数によるバラつき」を単一ノイズで近似したもの。本家と同じく
+//      「確率」としての勝率が出る（決定論的な余裕度換算をやめた）。
+// 校正結果：実測34件に対し MAE≈3.3pt・最大誤差≈14pt（旧実装は誤差20〜50pt）。
+// Frakinator自体の50戦サンプリング誤差が±7pt程度あるため、実用上のノイズ床に近い。
+// ブラインド検証（学習前に予測を確定→実測照合）は計15件で勝敗方向15/15正解。
+// さらに「モデルが推奨した構成を本家で検証→外れたら学習データに追加」の反復検証を実施
+// （60/40/0のような弓ゼロ構成の過大評価をこの反復で発見・修正済み）。
+// 注：騎兵→弓兵の与ダメ+10%（運営回答）はFrakinator実測では観測されず（56%≒互角）、
+//     校正の結果 PVP_TRI_WEAK=1.0（ボーナスなし）が最良だった。
+var PVP_BASE_STATS={inf:{atk:472,hea:1416},cav:{atk:1416,hea:472},arc:{atk:1888,hea:354}};
+// ===== 兵士ティア（レベル）対応（2026-07-11深夜追加） =====
+// Frakinator Theory-craftingタブの画像表より。兵種間の比率は全ティアで一定
+// （歩Atk=騎HP=歩HP/3=騎Atk/3、歩Atk=弓HP×4/3=弓Atk/4）なので、
+// ティアごとに歩兵Atkの1スカラーだけ持てば全兵種の基礎ステが導出できる。
+// メールの兵数アイコンの「Lv.10.3」等の小数部は真金強化レベル（T10.1〜T10.5）に対応する。
+// T7/T8は表に無いためT6→T9の線形補間による推定値（※要検証）。T1-5は対人戦で実質使われないため未対応（T6扱い）。
+var PVP_TIER_SCALE={"6":243,"7":295,"8":348,"9":400,"10":472,"10.1":491,"10.2":515,"10.3":541,"10.4":568,"10.5":597};
+function pvpTierKey(v){
+  var s=String(v==null||v===""?"10":v).replace(/^t/i,"");
+  if(PVP_TIER_SCALE[s]) return s;
+  var n=parseFloat(s);
+  if(isNaN(n)) return "10";
+  if(n<=6) return "6";
+  if(n>=10.5) return "10.5";
+  // 最も近い既知ティアに丸める
+  var keys=Object.keys(PVP_TIER_SCALE),best="10",bd=99;
+  keys.forEach(function(k){var d=Math.abs(parseFloat(k)-n);if(d<bd){bd=d;best=k;}});
+  return best;
+}
+// 兵種tの基礎Atk/HP（ティア別）。inf.atkを基準に比率で導出
+function pvpBaseFor(t,tierKey){
+  var base=PVP_TIER_SCALE[tierKey]||472;
+  if(t==="inf") return {atk:base,hea:base*3};
+  if(t==="cav") return {atk:base*3,hea:base};
+  return {atk:base*4,hea:base*0.75}; // arc
+}
+// T1-6は三すくみの追加ボーナス（歩の対騎防御・弓の連続攻撃・騎の奇襲）が無く与ダメ+10%のみ（運営回答）
+function pvpTierIsHigh(tierKey){return parseFloat(tierKey)>=7;}
+var PVP_TRI_IC=1.30;     // 歩兵→騎兵の実効ボーナス（実測校正値）
+var PVP_TRI_AI=1.25;     // 弓兵→歩兵の実効ボーナス（実測34ケースで再校正、2026-07-11夜）
+var PVP_TRI_WEAK=1.0;    // 騎兵→弓兵（実測上ボーナスは観測されないため1.0）
+var PVP_TRI_BYPASS=0.20; // 騎兵の「奇襲」＝攻撃の20%が歩兵を避けて弓兵へ向かう（Tier7-10）
+                         // 重要：奇襲は「騎兵全体の攻撃力×20%」（時間の20%だけ全騎兵が奇襲する期待値）。
+                         // 「騎兵の20%が独立部隊として攻撃」(sqrt(0.2n))ではない。後者だとsqrtスケールで
+                         // 奇襲火力が過大になり、弓ゼロ構成が過大評価される（実測60/40/0vs40/30/30=6.5%を再現不可）
+var PVP_CAV_INF=0.80;    // 騎兵→歩兵は歩兵の対騎兵防御ボーナスで実効-20%（実測34ケースで再校正）
+var PVP_SIM_STEPS=250;   // 1試行あたりの最大ステップ数（殲滅で早期終了）
+var PVP_MC_TRIALS=1200;  // モンテカルロ試行回数（±1.4pt程度の自前サンプリング誤差。600→1200で√2倍精密化）
+var PVP_MC_SIGMA=0.05;   // 陣営実効戦力の対数正規ノイズσ
+
+// 決定論的乱数（mulberry32）：毎回同じ結果を返すためシード固定
+function pvpMulberry32(seed){
+  return function(){
+    seed|=0; seed=seed+0x6D2B79F5|0;
+    var t=Math.imul(seed^seed>>>15,1|seed);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+
+// opts（省略可）: {trials:試行回数, sigma:ノイズσ}
+// 通常表示はデフォルト（PVP_MC_TRIALS回・σ=PVP_MC_SIGMA）、構成スイープの順位付けは{trials:1,sigma:0}の軽量モードを使う
+function pvpSimulateBattle(self,opp,bs,bo,opts){
+  var mcTrials=(opts&&opts.trials)||PVP_MC_TRIALS;
+  var mcSigma=(opts&&typeof opts.sigma==="number")?opts.sigma:PVP_MC_SIGMA;
+  var selfF={inf:pvpTypeFactor(self,bs,"inf"),cav:pvpTypeFactor(self,bs,"cav"),arc:pvpTypeFactor(self,bs,"arc")};
+  var oppF={inf:pvpTypeFactor(opp,bo,"inf"),cav:pvpTypeFactor(opp,bo,"cav"),arc:pvpTypeFactor(opp,bo,"arc")};
+  var s0={inf:parseInt(self.inf_n)||0,cav:parseInt(self.cav_n)||0,arc:parseInt(self.arc_n)||0};
+  var o0={inf:parseInt(opp.inf_n)||0,cav:parseInt(opp.cav_n)||0,arc:parseInt(opp.arc_n)||0};
+  var totalS=s0.inf+s0.cav+s0.arc,totalO=o0.inf+o0.cav+o0.arc;
+  if(totalS<=0||totalO<=0) return null;
+  var N0=Math.min(totalS,totalO);
+
+  // 兵種別ティア（メールのLv.X.Y。未指定はT10）→基礎Atk/HPと三すくみ追加ボーナス有無
+  function sideTiers(side){
+    return {
+      inf:pvpTierKey(side.inf_tier),cav:pvpTierKey(side.cav_tier),arc:pvpTierKey(side.arc_tier)
+    };
+  }
+  function sideBases(tiers){
+    return {inf:pvpBaseFor("inf",tiers.inf),cav:pvpBaseFor("cav",tiers.cav),arc:pvpBaseFor("arc",tiers.arc)};
+  }
+  var tiersS=sideTiers(self),tiersO=sideTiers(opp);
+  var baseS=sideBases(tiersS),baseO=sideBases(tiersO);
+
+  // 実効攻撃力・実効HP＝ティア別基礎ステータス×プレイヤーのステータス係数
+  // attF/defF: pvpTypeFactorのA=(1+atk%)(1+let%)×armyMult、D=(1+def%)(1+hea%)
+  // 攻撃側(att)から防御側(def_)への1ステップあたりのダメージ流量（ターゲティングルール反映）
+  // T1-6の兵は追加ボーナス（歩の対騎防御・弓の連続攻撃・騎の奇襲）が無く与ダメ+10%のみ（運営回答）
+  function flows(att,attF,attBase,attTiers,def_,defF,defBase,defTiers,g){
+    var f={inf:0,cav:0,arc:0};
+    function dmg(t,u,n,mult){
+      return Math.sqrt(Math.max(n,0))*Math.sqrt(N0)
+        *(attBase[t].atk*attF[t].A)/(defBase[u].hea*defF[u].D)*mult*g;
+    }
+    // 弓兵：敵歩兵（前衛）優先。高ティアは二重ボーナス、低ティアは+10%のみ
+    if(att.arc>0){
+      var aiMult=pvpTierIsHigh(attTiers.arc)?PVP_TRI_AI:1.10;
+      if(def_.inf>0) f.inf+=dmg("arc","inf",att.arc,aiMult);
+      else if(def_.cav>0) f.cav+=dmg("arc","cav",att.arc,1);
+      else if(def_.arc>0) f.arc+=dmg("arc","arc",att.arc,1);
+    }
+    // 騎兵：敵歩兵が健在なら大半は歩兵へ（高ティア歩兵は対騎防御あり）、高ティア騎兵のみ奇襲で弓兵へ
+    if(att.cav>0){
+      var bypass=pvpTierIsHigh(attTiers.cav)?PVP_TRI_BYPASS:0;
+      var cavInf=pvpTierIsHigh(defTiers.inf)?PVP_CAV_INF:1.0;
+      if(def_.inf>0){
+        if(def_.arc>0&&bypass>0){
+          f.inf+=dmg("cav","inf",att.cav*(1-bypass),cavInf);
+          f.arc+=dmg("cav","arc",att.cav,PVP_TRI_WEAK)*bypass;
+        } else {
+          f.inf+=dmg("cav","inf",att.cav,cavInf);
+        }
+      } else if(def_.cav>0&&def_.arc>0&&bypass>0){
+        f.cav+=dmg("cav","cav",att.cav*(1-bypass),1);
+        f.arc+=dmg("cav","arc",att.cav,PVP_TRI_WEAK)*bypass;
+      } else if(def_.cav>0){ f.cav+=dmg("cav","cav",att.cav,1); }
+      else if(def_.arc>0){ f.arc+=dmg("cav","arc",att.cav,PVP_TRI_WEAK); }
+    }
+    // 歩兵：敵歩兵（前衛同士、ボーナスなし）優先。不在なら騎兵（高ティアは二重ボーナス）→弓兵
+    if(att.inf>0){
+      var icMult=pvpTierIsHigh(attTiers.inf)?PVP_TRI_IC:1.10;
+      if(def_.inf>0) f.inf+=dmg("inf","inf",att.inf,1);
+      else if(def_.cav>0) f.cav+=dmg("inf","cav",att.inf,icMult);
+      else if(def_.arc>0) f.arc+=dmg("inf","arc",att.inf,1);
+    }
+    return f;
+  }
+
+  // 適応dt：初期流量から「1ステップ≈総兵力の1.5%減衰」となるよう自動設定
+  var f0S=flows(s0,selfF,baseS,tiersS,o0,oppF,baseO,tiersO,1),f0O=flows(o0,oppF,baseO,tiersO,s0,selfF,baseS,tiersS,1);
+  var rate=Math.max((f0S.inf+f0S.cav+f0S.arc)/totalO,(f0O.inf+f0O.cav+f0O.arc)/totalS);
+  var dt=rate>0?0.015/rate:1;
+
+  // モンテカルロ：陣営実効戦力に対数正規ノイズを与えてPVP_MC_TRIALS回試行し勝率を集計
+  var rand=pvpMulberry32(123456789);
+  function gauss(){
+    var u=Math.max(rand(),1e-9),v=rand();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  }
+  var wins=0,sumRemS=0,sumRemO=0,sumMargin=0;
+  for(var tr=0;tr<mcTrials;tr++){
+    var gS=Math.exp(gauss()*mcSigma),gO=Math.exp(gauss()*mcSigma);
+    var s={inf:s0.inf,cav:s0.cav,arc:s0.arc},o={inf:o0.inf,cav:o0.cav,arc:o0.arc};
+    for(var i=0;i<PVP_SIM_STEPS;i++){
+      if(s.inf+s.cav+s.arc<=totalS*0.003||o.inf+o.cav+o.arc<=totalO*0.003) break;
+      var fS=flows(s,selfF,baseS,tiersS,o,oppF,baseO,tiersO,gS),fO=flows(o,oppF,baseO,tiersO,s,selfF,baseS,tiersS,gO);
+      o.inf=Math.max(0,o.inf-fS.inf*dt);o.cav=Math.max(0,o.cav-fS.cav*dt);o.arc=Math.max(0,o.arc-fS.arc*dt);
+      s.inf=Math.max(0,s.inf-fO.inf*dt);s.cav=Math.max(0,s.cav-fO.cav*dt);s.arc=Math.max(0,s.arc-fO.arc*dt);
+    }
+    var remS=s.inf+s.cav+s.arc,remO=o.inf+o.cav+o.arc;
+    if(remS/totalS>remO/totalO) wins++;
+    sumRemS+=remS;sumRemO+=remO;
+    sumMargin+=remS/totalS-remO/totalO;
+  }
+  var pct=wins/mcTrials*100;
+  // margin：平均残存率の差（-1〜+1）。スイープの順位付け用（勝率0/100で飽和しない連続値）
+  return {overallPct:pct,remS:sumRemS/mcTrials,remO:sumRemO/mcTrials,margin:sumMargin/mcTrials};
+}
+
+function pvpCompare(self,opp,opts){
+  var bs=pvpSideBonus(self),bo=pvpSideBonus(opp);
+  var rows=[],totalW=0,sumRatioLog=0;
+  var totalSelfN=(parseInt(self.inf_n)||0)+(parseInt(self.cav_n)||0)+(parseInt(self.arc_n)||0);
+  var totalOppN=(parseInt(opp.inf_n)||0)+(parseInt(opp.cav_n)||0)+(parseInt(opp.arc_n)||0);
+  var N0global=Math.min(totalSelfN,totalOppN);
+  PVP_TYPES.forEach(function(tp){
+    var t=tp.k;
+    var Ns=parseInt(self[t+"_n"])||0,No=parseInt(opp[t+"_n"])||0;
+    var row={type:tp,Ns:Ns,No:No,ratio:null};
+    if(Ns>0&&No>0&&N0global>0){
+      var fs=pvpTypeFactor(self,bs,t),fo=pvpTypeFactor(opp,bo,t);
+      // ティア差があれば基礎ステ比も反映（同ティアなら1:1で従来通り）
+      var tbS=pvpBaseFor(t,pvpTierKey(self[t+"_tier"])),tbO=pvpBaseFor(t,pvpTierKey(opp[t+"_tier"]));
+      var killsBySelf=Math.sqrt(Ns)*Math.sqrt(N0global)*(tbS.atk*fs.A)/(tbO.hea*fo.D);
+      var killsByOpp=Math.sqrt(No)*Math.sqrt(N0global)*(tbO.atk*fo.A)/(tbS.hea*fs.D);
+      row.killsBySelf=killsBySelf;row.killsByOpp=killsByOpp;
+      var ratio=killsByOpp>0?killsBySelf/killsByOpp:(killsBySelf>0?99:1);
+      row.ratio=ratio;
+      var w=Ns+No;
+      totalW+=w;sumRatioLog+=Math.log(Math.max(ratio,0.0001))*w;
+    }
+    rows.push(row);
+  });
+  var overallRatio=totalW>0?Math.exp(sumRatioLog/totalW):1;
+  var basePct=overallRatio/(overallRatio+1)*100; // 三すくみ抜きの素の統計比較（参考表示用）
+  var sim=pvpSimulateBattle(self,opp,bs,bo,opts);
+  var overallPct=sim?sim.overallPct:basePct;
+  var triangleAdj=overallPct-basePct; // 三すくみシミュレーションによって基礎値からどれだけ動いたか（参考表示用）
+  return {rows:rows,overallRatio:overallRatio,basePct:basePct,triangleAdj:triangleAdj,overallPct:overallPct,margin:sim?sim.margin:0,selfNotes:bs.notes,oppNotes:bo.notes};
+}
+
+function parsePvpStats(txt){
+  var km=[
+    {f:"inf_atk",keys:["歩兵攻撃力","歩兵攻擊力"]},{f:"inf_def",keys:["歩兵防御力","歩兵防禦力"]},
+    {f:"inf_let",keys:["歩兵殺傷力"]},{f:"inf_hea",keys:["歩兵HP","歩兵体力","歩兵耐久力"]},
+    {f:"cav_atk",keys:["騎兵攻撃力","騎兵攻擊力"]},{f:"cav_def",keys:["騎兵防御力","騎兵防禦力"]},
+    {f:"cav_let",keys:["騎兵殺傷力"]},{f:"cav_hea",keys:["騎兵HP","騎兵体力","騎兵耐久力"]},
+    {f:"arc_atk",keys:["弓兵攻撃力","弓兵攻擊力"]},{f:"arc_def",keys:["弓兵防御力","弓兵防禦力"]},
+    {f:"arc_let",keys:["弓兵殺傷力"]},{f:"arc_hea",keys:["弓兵HP","弓兵体力","弓兵耐久力"]}
+  ];
+  // 実際のゲーム内メール「ボーナス詳細」画面は1行＝[自分の値]→[ラベル]→[相手の値]の
+  // 3行1組で並ぶ（自分と相手が縦2ブロックに分かれているのではなく、ラベルを挟んで
+  // 左右に並ぶ）。そのためラベル行の直前を自分、直後を相手として読み取る。
+  var lines=(txt||"").split(/[\n\r]+/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
+  var self={},opp={};
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i];
+    km.forEach(function(item){
+      var hit=item.keys.some(function(k){return line.indexOf(k)!==-1;});
+      if(!hit) return;
+      if(i>0){
+        var m1=lines[i-1].match(/-?\d+\.?\d*/);
+        if(m1) self[item.f]=parseFloat(m1[0]);
+      }
+      if(i+1<lines.length){
+        var m2=lines[i+1].match(/-?\d+\.?\d*/);
+        if(m2) opp[item.f]=parseFloat(m2[0]);
+      }
+    });
+  }
+  var foundSelf=Object.keys(self).length,foundOpp=Object.keys(opp).length;
+  // 兵力（部隊人数）の読み取り：メール上部のアイコン列にカンマ区切りの人数が
+  // 自分(歩兵→騎兵→弓兵)・相手(歩兵→騎兵→弓兵)の順で計6個並んでいる。
+  // 「追加ステータス」「ボーナス詳細」欄より前の範囲だけを対象にし、
+  // 3桁カンマ区切りの数値（メールIDなど桁の多い無区切り数値は除外）を上から拾う。
+  var bonusIdx=lines.findIndex(function(l){return l.indexOf("追加ステータス")!==-1||l.indexOf("ボーナス詳細")!==-1;});
+  var scanEnd=bonusIdx===-1?lines.length:bonusIdx;
+  var troopNums=[];
+  for(var j=0;j<scanEnd;j++){
+    if(/^\d{1,3}(,\d{3})+$/.test(lines[j])) troopNums.push(parseInt(lines[j].replace(/,/g,""),10));
+  }
+  // 兵士レベル（ティア）の読み取り：兵数アイコンの「Lv.10.0」等（小数部＝真金強化レベル）。
+  // OCRのゆらぎ（'Lv.10.0 / Lv.10.0- など前後のノイズ）を許容し、兵数と同じ順
+  // （自分 歩→騎→弓、相手 歩→騎→弓）で最大6個拾う。
+  var tierVals=[];
+  for(var j2=0;j2<scanEnd;j2++){
+    var lm=lines[j2].match(/Lv\.?\s*(\d{1,2}(?:\.\d)?)/i);
+    if(lm) tierVals.push(lm[1]);
+  }
+  var foundTier=0;
+  if(tierVals.length>=6){
+    // "10.0"→"10" のように既知ティアキーへ正規化してから格納（UIのselect値と一致させる）
+    self.inf_tier=pvpTierKey(tierVals[0]);self.cav_tier=pvpTierKey(tierVals[1]);self.arc_tier=pvpTierKey(tierVals[2]);
+    opp.inf_tier=pvpTierKey(tierVals[3]);opp.cav_tier=pvpTierKey(tierVals[4]);opp.arc_tier=pvpTierKey(tierVals[5]);
+    foundTier=6;
+  }
+  var foundTroop=0;
+  if(troopNums.length>=6){
+    self.inf_n=String(troopNums[0]);self.cav_n=String(troopNums[1]);self.arc_n=String(troopNums[2]);
+    opp.inf_n=String(troopNums[3]);opp.cav_n=String(troopNums[4]);opp.arc_n=String(troopNums[5]);
+    foundTroop=6;
+  }
+  return {self:self,opp:opp,foundSelf:foundSelf,foundOpp:foundOpp,foundTroop:foundTroop,foundTier:foundTier};
+}
+
+function PastePvpStats(props){
+  var onResult=props.onResult;
+  var st=useState("");var txt=st[0],setTxt=st[1];
+  var sr=useState(null);var result=sr[0],setResult=sr[1];
+  function handle(val){
+    setTxt(val);
+    if(!val.trim()){setResult(null);return;}
+    var parsed=parsePvpStats(val);
+    setResult(parsed);
+    if(parsed.foundSelf>0||parsed.foundOpp>0) onResult(parsed);
+  }
+  return h("div",null,
+    h("div",{style:{background:"rgba(0,122,255,.07)",borderRadius:14,padding:"14px 16px",marginBottom:12}},
+      h("p",{style:{fontSize:13,fontWeight:600,color:"#007aff",marginBottom:12}},"📋 テキストの取得方法"),
+      h(GuideAccordion,{label:"iOS",color:"#007aff",steps:[
+        {n:1,t:"対人戦の戦闘結果メールを開く",s:"最下部までスクロールして「ボーナス詳細／追加ステータス」を表示（自分の値・項目名・相手の値が横並びの画面。上部の兵種アイコン列＝兵力も画面に含める）"},
+        {n:2,t:"ボーナス詳細画面のスクショを撮る",s:""},
+        {n:3,t:"スクショから文字を長押し →「すべてを選択」→「コピー」",s:"クリップボードにコピーされます"},
+        {n:4,t:"下のエリアに貼り付け",s:"自分と相手の攻撃力・防御力・殺傷力・HP・兵力を自動で読み取ります。読み取れなかった項目は下で手動修正してください"}
+      ]}),
+      h(GuideAccordion,{label:"Android",color:"#34c759",steps:[
+        {n:1,t:"対人戦の戦闘結果メールを開く",s:"最下部までスクロールして「ボーナス詳細／追加ステータス」を表示（自分の値・項目名・相手の値が横並びの画面。上部の兵種アイコン列＝兵力も画面に含める）"},
+        {n:2,t:"ボーナス詳細画面のスクショを撮る",s:""},
+        {n:3,t:"Googleレンズでスクショを読み取る",s:"",link:{href:"https://lens.google.com",label:"Googleレンズを開く"}},
+        {n:4,t:"「テキスト」タブ →「すべてを選択」→「コピー」",s:"画面内の文字がすべて選択されます"},
+        {n:5,t:"下のエリアに貼り付け",s:"自分と相手の攻撃力・防御力・殺傷力・HP・兵力を自動で読み取ります。読み取れなかった項目は下で手動修正してください"}
+      ]})
+    ),
+    h("textarea",{className:"paste-box",value:txt,placeholder:"👆 ここに貼り付け",onChange:function(e){handle(e.target.value);}}),
+    result&&(result.foundSelf+result.foundOpp)>0&&h("div",{className:"toast toast-ok"},"✓ 自分 "+result.foundSelf+"/12・相手 "+result.foundOpp+"/12 項目 ＋兵力"+(result.foundTroop===6?"（6/6）":"（検出できず・手動入力を）")+" ＋兵士Lv"+(result.foundTier===6?"（6/6・自動入力済み）":"（検出できず・T10として計算）")),
+    result&&(result.foundSelf+result.foundOpp)===0&&h("div",{className:"toast toast-err"},"✗ 数値を検出できませんでした。手動で入力してください")
+  );
+}
+
+function PvpStatBlock(props){
+  var side=props.side,setSide=props.setSide;
+  function upd(key,val){setSide(function(prev){var n=Object.assign({},prev);n[key]=val;return n;});}
+  return h("div",null,
+    PVP_TYPES.map(function(tp){
+      return h("div",{key:tp.k,style:{marginBottom:16}},
+        h("div",{style:{display:"flex",alignItems:"center",gap:6,marginBottom:8}},h("span",null,tp.em),h("span",{style:{fontSize:15,fontWeight:600,color:IC[tp.k]}},tp.l)),
+        h("div",{style:{display:"grid",gridTemplateColumns:"1fr auto",gap:8,marginBottom:8}},
+          h("div",null,
+            h("p",{className:"fl"},"兵力"),
+            h("div",{className:"iw"},h("input",{type:"number",value:side[tp.k+"_n"]||"",placeholder:"例：50000",onChange:function(ev){upd(tp.k+"_n",ev.target.value);}}),h("span",{className:"sfx"},"人"))
+          ),
+          h("div",null,
+            h("p",{className:"fl"},"兵士Lv"),
+            h("select",{value:side[tp.k+"_tier"]||"10",onChange:function(ev){upd(tp.k+"_tier",ev.target.value);},style:{padding:"10px 8px",borderRadius:10,border:"1px solid rgba(118,118,128,.2)",fontSize:14,background:"#fff",color:IC[tp.k]}},
+              ["6","7","8","9","10","10.1","10.2","10.3","10.4","10.5"].map(function(tv){return h("option",{key:tv,value:tv},"Lv."+tv);})
+            )
+          )
+        ),
+        h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}},
+          h("div",null,h("p",{className:"fl"},"攻撃力"),h("div",{className:"iw"},h("input",{type:"number",value:side[tp.k+"_atk"]||"",placeholder:"",onChange:function(ev){upd(tp.k+"_atk",ev.target.value);},style:{color:IC[tp.k]}}),h("span",{className:"sfx"},"%"))),
+          h("div",null,h("p",{className:"fl"},"防御力"),h("div",{className:"iw"},h("input",{type:"number",value:side[tp.k+"_def"]||"",placeholder:"",onChange:function(ev){upd(tp.k+"_def",ev.target.value);},style:{color:IC[tp.k]}}),h("span",{className:"sfx"},"%"))),
+          h("div",null,h("p",{className:"fl"},"殺傷力"),h("div",{className:"iw"},h("input",{type:"number",value:side[tp.k+"_let"]||"",placeholder:"",onChange:function(ev){upd(tp.k+"_let",ev.target.value);},style:{color:IC[tp.k]}}),h("span",{className:"sfx"},"%"))),
+          h("div",null,h("p",{className:"fl"},"HP"),h("div",{className:"iw"},h("input",{type:"number",value:side[tp.k+"_hea"]||"",placeholder:"",onChange:function(ev){upd(tp.k+"_hea",ev.target.value);},style:{color:IC[tp.k]}}),h("span",{className:"sfx"},"%")))
+        )
+      );
+    })
+  );
+}
+
+function PvpHeroBlock(props){
+  var side=props.side,setSide=props.setSide;
+  function upd(key,val){setSide(function(prev){var n=Object.assign({},prev);n[key]=val;return n;});}
+  return h("div",null,
+    h("p",{className:"sec"},"ホスト英雄（各兵種のリーダー英雄）"),
+    [{k:"heroInf",list:PVP_HERO_INF,l:"🛡️ 歩兵ホスト英雄"},{k:"heroCav",list:PVP_HERO_CAV,l:"🐎 騎兵ホスト英雄"},{k:"heroArc",list:PVP_HERO_ARC,l:"🏹 弓兵ホスト英雄"}].map(function(row){
+      return h("div",{key:row.k,className:"dropdown-wrap"},
+        h("p",{className:"fl"},row.l),
+        h("select",{className:"dropdown",value:side[row.k]||"none",onChange:function(ev){upd(row.k,ev.target.value);}},
+          row.list.map(function(o){return h("option",{key:o.v,value:o.v},o.l);})
+        )
+      );
+    }),
+    side.heroArc==="rosa"&&h("div",{className:"dropdown-wrap"},
+      h("p",{className:"fl"},"ローザ「ゴールデン・リズム」Lv"),
+      h("select",{className:"dropdown",value:side.rosaLv||0,onChange:function(ev){upd("rosaLv",parseInt(ev.target.value,10));}},
+        ROSA_LIST.map(function(r){return h("option",{key:r.lv,value:r.lv},r.label);})
+      )
+    ),
+    h("p",{className:"sec",style:{marginTop:14}},"ジョイナー（最大4体）"),
+    h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}},
+      ["j1","j2","j3","j4"].map(function(jk,idx){
+        return h("div",{key:jk,className:"dropdown-wrap"},
+          h("p",{className:"fl"},"ジョイナー"+(idx+1)),
+          h("select",{className:"dropdown",value:side[jk]||"none",onChange:function(ev){upd(jk,ev.target.value);}},
+            PVP_HERO_JOINER.map(function(o){return h("option",{key:o.v,value:o.v},o.l);})
+          )
+        );
+      })
+    )
+  );
+}
+
+// 自分側の兵力総数を固定し、歩兵/騎兵/弓兵の配分（5%刻み）を総当たりして
+// 最も有利度が高くなる構成を探す（本家Frakinatorの「composition sweep」に相当する簡易版）。
+function pvpSweepOptimal(self,opp,total){
+  if(!total||total<=0) return null;
+  var best=null;
+  for(var i=0;i<=20;i++){
+    var fInf=i*0.05;
+    for(var j=0;j<=20-i;j++){
+      var fCav=j*0.05;
+      var fArc=Math.max(0,1-fInf-fCav);
+      var cand=Object.assign({},self,{
+        inf_n:String(Math.round(total*fInf)),
+        cav_n:String(Math.round(total*fCav)),
+        arc_n:String(Math.round(total*fArc))
+      });
+      // 軽量モード（決定論的1回試行）でmargin＝平均残存率差により順位付け
+      var r=pvpCompare(cand,opp,{trials:1,sigma:0});
+      if(!best||r.margin>best.margin){
+        best={margin:r.margin,fInf:fInf,fCav:fCav,fArc:fArc};
+      }
+    }
+  }
+  if(best){
+    // 最良構成のみフル精度（600試行MC）で勝率を算出
+    var bc=Object.assign({},self,{
+      inf_n:String(Math.round(total*best.fInf)),
+      cav_n:String(Math.round(total*best.fCav)),
+      arc_n:String(Math.round(total*best.fArc))
+    });
+    best.pct=pvpCompare(bc,opp).overallPct;
+  }
+  return best;
+}
+
+// ===== 英雄見直し提案 =====
+// 各枠（ホスト3＋ジョイナー4）について、数値が確定している英雄を総当たりでシミュレーションし、
+// 現在より有利になる入れ替えを提案する。数値未検証の英雄（確率発動スキル等）は効果0として
+// 扱われてしまい「外せ」という誤った提案になり得るため、現在セットされている英雄が
+// 未検証の場合はその枠の提案をスキップして注記のみ出す。
+var PVP_MODELED={
+  heroInf:["charles","amadeus","eric","longfei","howard","zoe","helga","triton"],
+  heroCav:["aiva","chenko","margot","fahd","gordon","hilde","jabel"],
+  heroArc:["renron","amane","yeonwoo","vivian","quinn","jaeger","saul"],
+  joiner:["charles","aiva","renron","chenko","amane","yeonwoo","margot","amadeus","gordon","hilde","saul","howard","quinn","fahd","eric","triton"]
+};
+function pvpHeroAdvice(self,opp){
+  function marginOf(s){var r=pvpCompare(s,opp,{trials:1,sigma:0});return r.margin;}
+  var slots=[
+    {key:"heroInf",list:PVP_HERO_INF,modeled:PVP_MODELED.heroInf,label:"🛡️ 歩兵ホスト"},
+    {key:"heroCav",list:PVP_HERO_CAV,modeled:PVP_MODELED.heroCav,label:"🐎 騎兵ホスト"},
+    {key:"heroArc",list:PVP_HERO_ARC,modeled:PVP_MODELED.heroArc,label:"🏹 弓兵ホスト"},
+    {key:"j1",list:PVP_HERO_JOINER,modeled:PVP_MODELED.joiner,label:"ジョイナー1"},
+    {key:"j2",list:PVP_HERO_JOINER,modeled:PVP_MODELED.joiner,label:"ジョイナー2"},
+    {key:"j3",list:PVP_HERO_JOINER,modeled:PVP_MODELED.joiner,label:"ジョイナー3"},
+    {key:"j4",list:PVP_HERO_JOINER,modeled:PVP_MODELED.joiner,label:"ジョイナー4"}
+  ];
+  var baseMargin=marginOf(self);
+  var suggestions=[],skipped=[],bestSelf=Object.assign({},self),anyChange=false;
+  slots.forEach(function(slot){
+    var cur=self[slot.key]||"none";
+    // 現在の英雄が「選択済みだが数値未検証」なら提案しない（外す提案は誤りになるため）
+    if(cur!=="none"&&slot.modeled.indexOf(cur)===-1){
+      skipped.push(slot.label+"（"+pvpHeroLabel(slot.list,cur)+"は数値未検証のため比較不可）");
+      return;
+    }
+    var best=null;
+    slot.modeled.forEach(function(v){
+      if(v===cur) return;
+      var cand=Object.assign({},bestSelf);cand[slot.key]=v;
+      var m=marginOf(cand);
+      if(!best||m>best.m) best={v:v,m:m};
+    });
+    var curMargin=marginOf(bestSelf);
+    if(best&&best.m>curMargin+0.003){
+      suggestions.push({label:slot.label,from:cur==="none"?"なし":pvpHeroLabel(slot.list,cur),to:pvpHeroLabel(slot.list,best.v),key:slot.key});
+      bestSelf[slot.key]=best.v;
+      anyChange=true;
+    }
+  });
+  var curPct=pvpCompare(self,opp,{trials:400}).overallPct;
+  var bestPct=anyChange?pvpCompare(bestSelf,opp,{trials:400}).overallPct:curPct;
+  return {suggestions:suggestions,skipped:skipped,curPct:curPct,bestPct:bestPct};
+}
+
+function ToolPvp(props){
+  var onBack=props.onBack;
+  var ss=useState(0);var step=ss[0],setStep=ss[1];
+  var s1=useState({});var self=s1[0],setSelf=s1[1];
+  var s2=useState({});var opp=s2[0],setOpp=s2[1];
+  function applyParsed(parsed){
+    if(parsed.self&&Object.keys(parsed.self).length) setSelf(function(prev){return Object.assign({},prev,parsed.self);});
+    if(parsed.opp&&Object.keys(parsed.opp).length) setOpp(function(prev){return Object.assign({},prev,parsed.opp);});
+  }
+  var result=useMemo(function(){return pvpCompare(self,opp);},[self,opp]);
+  var sweep=useMemo(function(){
+    var total=(parseInt(self.inf_n)||0)+(parseInt(self.cav_n)||0)+(parseInt(self.arc_n)||0);
+    if(!total) return null;
+    var optimal=pvpSweepOptimal(self,opp,total);
+    // スイープは5%刻み＋決定論的順位付けの近似なので、現在の入力構成の方が
+    // 予測勝率が高い場合は「現在の構成が最適」として表示する（推奨＜現在の矛盾を防ぐ）
+    if(optimal&&result&&result.overallPct>optimal.pct){
+      var cI=(parseInt(self.inf_n)||0)/total,cC=(parseInt(self.cav_n)||0)/total;
+      optimal={margin:0,fInf:cI,fCav:cC,fArc:Math.max(0,1-cI-cC),pct:result.overallPct,isCurrent:true};
+    }
+    var classic=pvpCompare(Object.assign({},self,{
+      inf_n:String(Math.round(total*0.5)),cav_n:String(Math.round(total*0.25)),arc_n:String(Math.round(total*0.25))
+    }),opp);
+    return {total:total,optimal:optimal,classicPct:classic.overallPct};
+  },[self,opp]);
+  // 英雄見直し提案（結果画面表示時のみ計算）
+  var heroAdvice=useMemo(function(){
+    if(step!==3) return null;
+    var total=(parseInt(self.inf_n)||0)+(parseInt(self.cav_n)||0)+(parseInt(self.arc_n)||0);
+    var totalO=(parseInt(opp.inf_n)||0)+(parseInt(opp.cav_n)||0)+(parseInt(opp.arc_n)||0);
+    if(!total||!totalO) return null;
+    return pvpHeroAdvice(self,opp);
+  },[self,opp,step]);
+
+  return h("div",{style:{paddingBottom:80}},
+    h("div",{style:{marginBottom:16}},
+      h("h2",{style:{fontSize:20,fontWeight:700,letterSpacing:"-.3px"}},"PvP戦闘予測ツール"),
+      h("p",{style:{fontSize:13,color:"#8e8e93",marginTop:4}},"自分と相手のステータスから勝率を予測します")
+    ),
+    h(Stepper,{step:step,setStep:setStep,labels:["自分の戦力","相手の戦力","ジョイナー","結果"]}),
+
+    step===0&&h("div",{className:"step-content"},
+      h("div",{className:"card"},
+        h("p",{className:"sec"},"戦闘レポート貼り付け（自分＋相手 まとめて自動入力）"),
+        h(PastePvpStats,{onResult:applyParsed}),
+        h("div",{className:"sep"}),
+        h("p",{className:"sec"},"自分のステータス（手動入力・確認）"),
+        h(PvpStatBlock,{side:self,setSide:setSelf})
+      ),
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),onBack();}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(1);}},"次へ")
+      )
+    ),
+
+    step===1&&h("div",{className:"step-content"},
+      h("div",{className:"card"},
+        h("p",{className:"sec"},"相手のステータス（自動入力済み・確認と修正）"),
+        h(PvpStatBlock,{side:opp,setSide:setOpp})
+      ),
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(0);}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(2);}},"次へ")
+      )
+    ),
+
+    step===2&&h("div",{className:"step-content"},
+      h("div",{className:"card"},
+        h("p",{style:{fontSize:15,fontWeight:700,marginBottom:8,color:"#007aff"}},"🔵 自分側"),
+        h(PvpHeroBlock,{side:self,setSide:setSelf})
+      ),
+      h("div",{className:"card"},
+        h("p",{style:{fontSize:15,fontWeight:700,marginBottom:8,color:"#c0392b"}},"🔴 相手側"),
+        h(PvpHeroBlock,{side:opp,setSide:setOpp})
+      ),
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(1);}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(3);}},"結果を見る")
+      )
+    ),
+
+    step===3&&h("div",{className:"step-content"},
+      h("div",{className:"card-hi",style:{padding:"24px 20px",textAlign:"center",background:"linear-gradient(160deg, rgba(0,122,255,.10), rgba(255,255,255,.92) 55%)"}},
+        h("p",{className:"sec",style:{textAlign:"center"}},"🎯 予測勝率"),
+        h("div",{style:{fontSize:40,fontWeight:800,marginTop:8,color:result.overallPct>=50?"#1a7a33":"#c0392b"}},result.overallPct.toFixed(0)+"%"),
+        h("p",{style:{fontSize:12,color:"#8e8e93",marginTop:4}},
+          result.overallPct>=90?"自分の圧勝が予測されます":
+          result.overallPct>=65?"自分が有利な計算結果です":
+          result.overallPct>=50?"僅差で自分がやや有利です":
+          result.overallPct>=35?"僅差で相手がやや有利です":
+          result.overallPct>=10?"相手が有利な計算結果です":"相手の圧勝が予測されます"),
+        h("div",{style:{height:10,borderRadius:99,background:"rgba(118,118,128,.15)",overflow:"hidden",marginTop:14}},
+          h("div",{style:{width:Math.min(100,Math.max(0,result.overallPct))+"%",height:"100%",background:"linear-gradient(90deg,#34c759,#007aff)"}})
+        ),
+        Math.abs(result.triangleAdj)>=1&&h("div",{style:{marginTop:12,padding:"10px 12px",borderRadius:12,background:"rgba(255,149,0,.10)",textAlign:"left"}},
+          h("p",{style:{fontSize:12,color:"#a05a00",fontWeight:600,marginBottom:3}},"📊 三すくみ・構成の影響："+(result.triangleAdj>=0?"+":"")+result.triangleAdj.toFixed(1)+"pt（ステータスのみの単純比較"+result.basePct.toFixed(0)+"%から変動）")
+        )
+      ),
+
+      sweep&&sweep.optimal&&(function(){
+        var opt=sweep.optimal;
+        var oInf=Math.round(opt.fInf*100),oCav=Math.round(opt.fCav*100),oArc=100-oInf-oCav;
+        var conic="conic-gradient("+IC.inf+" 0% "+oInf+"%, "+IC.cav+" "+oInf+"% "+(oInf+oCav)+"%, "+IC.arc+" "+(oInf+oCav)+"% 100%)";
+        return h("div",{className:"card-hi",style:{marginTop:10,padding:"22px 20px",background:"linear-gradient(160deg, rgba(52,199,89,.10), rgba(255,255,255,.92) 55%)"}},
+          h("p",{className:"sec",style:{textAlign:"center"}},opt.isCurrent?"🎯 現在の構成がほぼ最適です（総兵力"+fmt(sweep.total)+"人）":"🎯 この相手に対する推奨構成（総兵力"+fmt(sweep.total)+"人を再配分）"),
+          h("div",{style:{display:"flex",justifyContent:"center",marginTop:8,marginBottom:16}},
+            h("div",{style:{position:"relative",width:132,height:132}},
+              h("div",{style:{width:132,height:132,borderRadius:"50%",background:conic,boxShadow:"0 10px 28px rgba(0,0,0,.18)"}}),
+              h("div",{style:{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:80,height:80,borderRadius:"50%",background:"rgba(255,255,255,.97)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,boxShadow:"0 2px 8px rgba(0,0,0,.08)"}},
+                h("div",{style:{fontSize:9,color:"#8e8e93",letterSpacing:1,fontWeight:700}},"推奨"),
+                h("div",{style:{fontSize:13,fontWeight:800,textAlign:"center",lineHeight:1.5}},"歩"+oInf,h("br",null),"騎"+oCav+" 弓"+oArc)
+              )
+            )
+          ),
+          h("div",{style:{display:"flex",gap:8}},
+            [{lb:"歩兵",em:"🛡️",val:oInf,col:IC.inf,bg:IB.inf},{lb:"騎兵",em:"🐎",val:oCav,col:IC.cav,bg:IB.cav},{lb:"弓兵",em:"🏹",val:oArc,col:IC.arc,bg:IB.arc}].map(function(d){
+              return h("div",{key:d.lb,style:{flex:1,padding:"12px 6px",borderRadius:14,background:d.bg,textAlign:"center"}},
+                h("div",{style:{fontSize:18,marginBottom:2}},d.em),
+                h("div",{style:{fontSize:19,fontWeight:800,color:d.col}},d.val+"%"),
+                h("div",{style:{fontSize:11,color:d.col,opacity:.75,marginTop:2,fontWeight:600}},d.lb)
+              );
+            })
+          ),
+          h("div",{style:{marginTop:14,fontSize:12,color:"#3a3a3c",lineHeight:1.8,borderTop:".5px solid rgba(60,60,67,.12)",paddingTop:12}},
+            "推奨構成の予測勝率：",h("strong",{style:{color:"#1a7a33"}},opt.pct.toFixed(0)+"%"),h("br",null),
+            "現在の入力構成の予測勝率：",h("strong",null,result.overallPct.toFixed(0)+"%"),h("br",null),
+            "定番の50/25/25構成の予測勝率：",h("strong",null,sweep.classicPct.toFixed(0)+"%")
+          ),
+          h("p",{style:{fontSize:11,color:"#8e8e93",marginTop:10,lineHeight:1.6}},"※5%刻みの簡易探索のため参考値です。兵力・ステータスを変えると結果も変わります。")
+        );
+      })(),
+
+      heroAdvice&&(heroAdvice.suggestions.length>0||heroAdvice.skipped.length>0)&&h("div",{className:"card-hi",style:{marginTop:10,padding:"20px 18px",background:"linear-gradient(160deg, rgba(255,149,0,.10), rgba(255,255,255,.92) 55%)"}},
+        h("p",{className:"sec",style:{textAlign:"center"}},"🦸 英雄の見直し提案"),
+        heroAdvice.suggestions.length>0&&h("div",null,
+          h("div",{style:{fontSize:13,color:"#3a3a3c",lineHeight:2,marginTop:6}},
+            heroAdvice.suggestions.map(function(sg,i){
+              return h("div",{key:i,style:{display:"flex",alignItems:"center",gap:6}},
+                h("span",{style:{fontWeight:600,minWidth:110}},sg.label),
+                h("span",{style:{color:"#8e8e93"}},sg.from),
+                h("span",{style:{color:"#c0392b",fontWeight:700}},"→"),
+                h("span",{style:{fontWeight:700,color:"#1a7a33"}},sg.to)
+              );
+            })
+          ),
+          h("div",{style:{marginTop:10,fontSize:13,borderTop:".5px solid rgba(60,60,67,.12)",paddingTop:10}},
+            "すべて入れ替えた場合の予測勝率：",
+            h("strong",null,heroAdvice.curPct.toFixed(0)+"%"),
+            h("span",{style:{color:"#c0392b",fontWeight:700}}," → "),
+            h("strong",{style:{color:"#1a7a33",fontSize:16}},heroAdvice.bestPct.toFixed(0)+"%")
+          )
+        ),
+        heroAdvice.suggestions.length===0&&h("p",{style:{fontSize:13,color:"#1a7a33",fontWeight:600,marginTop:6,textAlign:"center"}},"✓ 現在の英雄構成から有効な入れ替え候補はありません"),
+        heroAdvice.skipped.length>0&&h("div",{style:{marginTop:8}},
+          heroAdvice.skipped.map(function(sk,i){return h("p",{key:i,style:{fontSize:11,color:"#9a5f00",lineHeight:1.6}},"※ "+sk);})
+        ),
+        h("p",{style:{fontSize:11,color:"#8e8e93",marginTop:10,lineHeight:1.6}},"※スキル数値が確定している英雄のみを対象にした比較です。確率発動スキル持ちの英雄（アルカ・マーゴの追撃等）は数値化できないため対象外で、実際にはそれらが上回る場合もあります。所持していない英雄の提案は読み替えてください。")
+      ),
+
+      h("div",{className:"card",style:{marginTop:10}},
+        h("p",{className:"sec"},"兵種別の内訳（ミラー対戦：同兵種同士で比較）"),
+        result.rows.map(function(row){
+          return h("div",{key:row.type.k,style:{padding:"10px 12px",borderRadius:14,background:IB[row.type.k],marginBottom:8}},
+            h("div",{className:"flex-between"},
+              h("span",{style:{fontSize:13,fontWeight:700,color:IC[row.type.k]}},row.type.em+" "+row.type.l),
+              h("span",{style:{fontSize:12,color:"#8e8e93"}},fmt(row.Ns)+" 人 vs "+fmt(row.No)+" 人")
+            ),
+            row.ratio===null?h("p",{style:{fontSize:12,color:"#8e8e93",marginTop:6}},"※どちらかの兵力が0のため計算対象外"):
+            h("p",{style:{fontSize:13,fontWeight:700,marginTop:6,color:row.ratio>=1?"#1a7a33":"#c0392b"}},
+              row.ratio>=1?"自分が有利（約"+row.ratio.toFixed(2)+"倍）":"相手が有利（約"+(1/row.ratio).toFixed(2)+"倍）"
+            )
+          );
+        })
+      ),
+      (result.selfNotes.length>0||result.oppNotes.length>0)&&h("div",{className:"card"},
+        h("p",{className:"sec"},"適用した英雄ボーナス"),
+        result.selfNotes.length>0&&h("div",{style:{marginBottom:10}},
+          h("p",{style:{fontSize:12,fontWeight:700,color:"#007aff",marginBottom:4}},"🔵 自分側"),
+          result.selfNotes.map(function(n,i){return h("div",{key:i,style:{fontSize:12,color:n.warn?"#9a5f00":"#3a3a3c",lineHeight:1.6}},"・"+n.t+"："+n.s);})
+        ),
+        result.oppNotes.length>0&&h("div",null,
+          h("p",{style:{fontSize:12,fontWeight:700,color:"#c0392b",marginBottom:4}},"🔴 相手側"),
+          result.oppNotes.map(function(n,i){return h("div",{key:i,style:{fontSize:12,color:n.warn?"#9a5f00":"#3a3a3c",lineHeight:1.6}},"・"+n.t+"："+n.s);})
+        )
+      ),
+      h("div",{style:{padding:"14px 16px",borderRadius:14,background:"rgba(255,149,0,.1)",marginTop:10}},
+        h("p",{style:{fontSize:12,fontWeight:700,color:"#9a5f00",marginBottom:6}},"⚠️ この結果について"),
+        h("p",{style:{fontSize:12,color:"#9a5f00",lineHeight:1.7}},
+          "装備・宝石・ペット・国王スキル等の効果は、貼り付けたステータス数値に含まれているため反映されます。ただし僅差の対決では誤差が出ることがあり、ステータス%に現れない確率発動型スキル等は反映できません。重要な判断の前には実戦での確認をおすすめします。"
+        )
+      ),
+      h("div",{style:{display:"flex",gap:10,marginTop:12}},
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),setStep(2);}},"戻る"),
+        h("button",{className:"btn",style:{flex:1,marginTop:0},onClick:function(){window.scrollTo(0,0),onBack();}},"TOPに戻る")
+      )
+    )
+  );
+}
+
 function GuideHost(props){
   var onBack=props.onBack;
   var HOST_HEROES=[
@@ -1311,6 +2182,7 @@ function App(){
   if(mode==="joiner") return h("div",{className:"wrap"},h(ToolJoiner,{onBack:function(){setMode(null);}}));
   if(mode==="guide-host") return h("div",{className:"wrap"},h(GuideHost,{onBack:function(){setMode(null);}}));
   if(mode==="guide-joiner") return h("div",{className:"wrap"},h(GuideJoiner,{onBack:function(){setMode(null);}}));
+  if(mode==="pvp") return h("div",{className:"wrap"},h(ToolPvp,{onBack:function(){setMode(null);}}));
 
   return h("div",{className:"wrap"},
     h("div",{style:{display:"flex",alignItems:"center",gap:12,marginBottom:28}},
@@ -1363,6 +2235,20 @@ function App(){
           h("div",null,
             h("div",{style:{fontSize:15,fontWeight:600}},"熊集結ジョイナーガイド"),
             h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"左英雄指定・兵種比率・最適英雄など")
+          )
+        ),
+        h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
+      )
+    ),
+
+    h("p",{style:{fontSize:12,fontWeight:600,color:"#6e6e73",marginBottom:8,marginTop:20,letterSpacing:".04em"}},"⚔️ PvP（対人戦）"),
+    h("div",{className:"list-group"},
+      h("div",{className:"list-row",onClick:function(){setMode("pvp");}},
+        h("div",{className:"flex-row"},
+          h("span",{style:{fontSize:22}},"⚔️"),
+          h("div",null,
+            h("div",{style:{fontSize:15,fontWeight:600}},"PvP戦闘予測ツール"),
+            h("div",{style:{fontSize:12,color:"#8e8e93",marginTop:2}},"自分と相手のステータスから勝率を予測")
           )
         ),
         h("span",{style:{color:"#c7c7cc",fontSize:18}},"›")
