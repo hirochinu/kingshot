@@ -1705,6 +1705,44 @@ function pvpHeroAdvice(self,opp){
   return {suggestions:suggestions,skipped:skipped,curPct:curPct,bestPct:bestPct};
 }
 
+// ===== 勝率アップの目安（感度分析） =====
+// 攻/防/殺/HP（+pt、3兵種一律＝研究・装備強化のイメージ）と兵力（+%、構成比維持）を
+// 段階的に増やしてシミュレーションし、目標勝率（現在<50%なら50%、50〜80%なら80%）に
+// 届く最小の増分を探す。計算コストがあるためボタン押下時のみ実行。
+function pvpStatAdvice(self,opp){
+  var cur=pvpCompare(self,opp,{trials:400}).overallPct;
+  var target=cur<50?50:(cur<80?80:null);
+  var rows=[];
+  function applyLever(base,key,amount){
+    var s=Object.assign({},base);
+    if(key==="troops"){
+      ["inf","cav","arc"].forEach(function(t){s[t+"_n"]=String(Math.round((parseInt(base[t+"_n"])||0)*(1+amount/100)));});
+    } else {
+      ["inf","cav","arc"].forEach(function(t){var k=t+"_"+key;s[k]=String((parseFloat(base[k])||0)+amount);});
+    }
+    return s;
+  }
+  if(target!==null){
+    var levers=[
+      {key:"atk",label:"攻撃力",unit:"pt",ladder:[10,25,50,75,100,150,200,300]},
+      {key:"def",label:"防御力",unit:"pt",ladder:[10,25,50,75,100,150,200,300]},
+      {key:"let",label:"殺傷力",unit:"pt",ladder:[10,25,50,75,100,150,200,300]},
+      {key:"hea",label:"HP",unit:"pt",ladder:[10,25,50,75,100,150,200,300]},
+      {key:"troops",label:"兵力",unit:"%",ladder:[5,10,20,30,50,75,100]}
+    ];
+    levers.forEach(function(lv){
+      var found=null,foundPct=null,lastPct=null;
+      for(var i=0;i<lv.ladder.length;i++){
+        var pct=pvpCompare(applyLever(self,lv.key,lv.ladder[i]),opp,{trials:200}).overallPct;
+        lastPct=pct;
+        if(pct>=target){found=lv.ladder[i];foundPct=pct;break;}
+      }
+      rows.push({label:lv.label,unit:lv.unit,found:found,pct:found!=null?foundPct:lastPct,maxTried:lv.ladder[lv.ladder.length-1]});
+    });
+  }
+  return {cur:cur,target:target,rows:rows};
+}
+
 function ToolPvp(props){
   var onBack=props.onBack;
   var ss=useState(0);var step=ss[0],setStep=ss[1];
@@ -1730,6 +1768,18 @@ function ToolPvp(props){
     }),opp);
     return {total:total,optimal:optimal,classicPct:classic.overallPct};
   },[self,opp]);
+  // 勝率アップの目安（重いのでボタン押下時のみ計算）
+  var sa=useState(null);var statAdvice=sa[0],setStatAdvice=sa[1];
+  var sl=useState(false);var statLoading=sl[0],setStatLoading=sl[1];
+  function runStatAdvice(){
+    setStatLoading(true);setStatAdvice(null);
+    setTimeout(function(){
+      try{ setStatAdvice(pvpStatAdvice(self,opp)); }catch(e){ setStatAdvice({error:true}); }
+      setStatLoading(false);
+    },50);
+  }
+  // 入力が変わったら結果をクリア
+  useMemo(function(){setStatAdvice(null);return null;},[self,opp]);
   // 英雄見直し提案（結果画面表示時のみ計算）
   var heroAdvice=useMemo(function(){
     if(step!==3) return null;
@@ -1862,6 +1912,31 @@ function ToolPvp(props){
           heroAdvice.skipped.map(function(sk,i){return h("p",{key:i,style:{fontSize:11,color:"#9a5f00",lineHeight:1.6}},"※ "+sk);})
         ),
         h("p",{style:{fontSize:11,color:"#8e8e93",marginTop:10,lineHeight:1.6}},"※スキル数値が確定している英雄のみを対象にした比較です。確率発動スキル持ちの英雄（アルカ・マーゴの追撃等）は数値化できないため対象外で、実際にはそれらが上回る場合もあります。所持していない英雄の提案は読み替えてください。")
+      ),
+
+      h("div",{className:"card-hi",style:{marginTop:10,padding:"20px 18px",background:"linear-gradient(160deg, rgba(52,199,89,.10), rgba(255,255,255,.92) 55%)"}},
+        h("p",{className:"sec",style:{textAlign:"center"}},"📈 勝率アップの目安"),
+        !statAdvice&&!statLoading&&h("div",null,
+          h("p",{style:{fontSize:12,color:"#6e6e73",lineHeight:1.6,marginTop:6}},"攻撃力・防御力・殺傷力・HP（3兵種一律で+pt）・兵力（構成比を保って+%）をどれだけ上げると勝率が目標に届くかをシミュレーションします。"),
+          h("button",{className:"btn",style:{marginTop:10},onClick:runStatAdvice},"計算する（数秒かかります）")
+        ),
+        statLoading&&h("p",{style:{fontSize:13,color:"#8e8e93",textAlign:"center",marginTop:10}},"⏳ 計算中…"),
+        statAdvice&&statAdvice.error&&h("p",{style:{fontSize:13,color:"#c0392b",marginTop:8}},"計算に失敗しました。入力を確認してください。"),
+        statAdvice&&!statAdvice.error&&statAdvice.target===null&&h("p",{style:{fontSize:13,color:"#1a7a33",fontWeight:600,textAlign:"center",marginTop:8}},"✓ 予測勝率"+statAdvice.cur.toFixed(0)+"%——すでに十分有利なため増強の必要はありません"),
+        statAdvice&&!statAdvice.error&&statAdvice.target!==null&&h("div",null,
+          h("p",{style:{fontSize:12,color:"#3a3a3c",marginTop:6,marginBottom:8}},"現在の予測勝率 ",h("strong",null,statAdvice.cur.toFixed(0)+"%")," → 目標 ",h("strong",{style:{color:"#1a7a33"}},statAdvice.target+"%")," に届く最小の増分："),
+          h("div",{style:{fontSize:13,lineHeight:2}},
+            statAdvice.rows.map(function(r,i){
+              return h("div",{key:i,style:{display:"flex",alignItems:"center",gap:8,borderBottom:i<statAdvice.rows.length-1?".5px solid rgba(60,60,67,.08)":"none"}},
+                h("span",{style:{fontWeight:600,minWidth:64}},r.label),
+                r.found!=null
+                  ?h("span",null,h("strong",{style:{color:"#1a7a33"}},"+"+r.found+r.unit)," 上げると → 約",h("strong",null,r.pct.toFixed(0)+"%"))
+                  :h("span",{style:{color:"#8e8e93"}},"+"+r.maxTried+r.unit+"でも届きません（最大 約"+r.pct.toFixed(0)+"%）")
+              );
+            })
+          ),
+          h("p",{style:{fontSize:11,color:"#8e8e93",marginTop:10,lineHeight:1.6}},"※ステータスは研究・装備・宝石等での上積みを想定し3兵種一律に加算、兵力は現在の構成比のまま増員した場合の試算です。項目単独で上げた場合の値なので、複数を組み合わせればより少ない増分で届きます。")
+        )
       ),
 
       h("div",{className:"card",style:{marginTop:10}},
