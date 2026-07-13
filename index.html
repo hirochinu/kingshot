@@ -1469,42 +1469,67 @@ function parsePvpStats(txt){
     {f:"arc_atk",keys:["弓兵攻撃力","弓兵攻擊力"]},{f:"arc_def",keys:["弓兵防御力","弓兵防禦力"]},
     {f:"arc_let",keys:["弓兵殺傷力"]},{f:"arc_hea",keys:["弓兵HP","弓兵体力","弓兵耐久力"]}
   ];
-  // 実際のゲーム内メール「ボーナス詳細」画面は1行＝[自分の値]→[ラベル]→[相手の値]の
-  // 3行1組で並ぶ（自分と相手が縦2ブロックに分かれているのではなく、ラベルを挟んで
-  // 左右に並ぶ）。そのためラベル行の直前を自分、直後を相手として読み取る。
+  // ゲーム内メール「ボーナス詳細」のOCR結果には2種類の並びがある：
+  //  (A) interleaved: [自分の値]→[ラベル]→[相手の値] の3行1組
+  //  (B) block: [自分の12値がまとめて]→[12ラベルがまとめて]→[相手の12値がまとめて]
+  // どちらでも読めるよう、まずラベルが連続ブロックかを判定して分岐する。
+  var STAT_ORDER=km.map(function(x){return x.f;});
   var lines=(txt||"").split(/[\n\r]+/).map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
   var self={},opp={};
-  for(var i=0;i<lines.length;i++){
-    var line=lines[i];
-    km.forEach(function(item){
-      var hit=item.keys.some(function(k){return line.indexOf(k)!==-1;});
-      if(!hit) return;
-      if(i>0){
-        var m1=lines[i-1].match(/-?\d+\.?\d*/);
-        if(m1) self[item.f]=parseFloat(m1[0]);
-      }
-      if(i+1<lines.length){
-        var m2=lines[i+1].match(/-?\d+\.?\d*/);
-        if(m2) opp[item.f]=parseFloat(m2[0]);
-      }
-    });
+  function isPct(l){return /^[+\-]?\d+(\.\d+)?%$/.test(l);}
+  function pctVal(l){var m=l.match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null;}
+  // 各ラベルの最初の出現行を求める
+  var labelIdxs=[];
+  km.forEach(function(item){
+    for(var li=0;li<lines.length;li++){
+      if(item.keys.some(function(k){return lines[li].indexOf(k)!==-1;})){labelIdxs.push(li);break;}
+    }
+  });
+  var firstLabel=labelIdxs.length?Math.min.apply(null,labelIdxs):-1;
+  var lastLabel=labelIdxs.length?Math.max.apply(null,labelIdxs):-1;
+  // ラベル区間内に%値がなければブロック構造とみなす
+  var pctBetween=0;
+  if(firstLabel>=0){for(var pb=firstLabel+1;pb<lastLabel;pb++){if(isPct(lines[pb]))pctBetween++;}}
+  var blockLayout=(labelIdxs.length>=8 && pctBetween===0);
+  if(blockLayout){
+    var before=[];for(var s2=firstLabel-1;s2>=0;s2--){if(isPct(lines[s2]))before.unshift(pctVal(lines[s2]));}
+    var after=[];for(var a2=lastLabel+1;a2<lines.length;a2++){if(isPct(lines[a2]))after.push(pctVal(lines[a2]));}
+    var selfVals=before.slice(-12),oppVals=after.slice(0,12);
+    for(var oi=0;oi<STAT_ORDER.length;oi++){
+      if(selfVals.length>=12 && selfVals[oi]!=null) self[STAT_ORDER[oi]]=selfVals[oi];
+      if(oppVals.length>=12 && oppVals[oi]!=null) opp[STAT_ORDER[oi]]=oppVals[oi];
+    }
+  } else {
+    for(var i=0;i<lines.length;i++){
+      var line=lines[i];
+      km.forEach(function(item){
+        var hit=item.keys.some(function(k){return line.indexOf(k)!==-1;});
+        if(!hit) return;
+        if(i>0){
+          var m1=lines[i-1].match(/-?\d+\.?\d*/);
+          if(m1) self[item.f]=parseFloat(m1[0]);
+        }
+        if(i+1<lines.length){
+          var m2=lines[i+1].match(/-?\d+\.?\d*/);
+          if(m2) opp[item.f]=parseFloat(m2[0]);
+        }
+      });
+    }
   }
   var foundSelf=Object.keys(self).length,foundOpp=Object.keys(opp).length;
-  // 兵力（部隊人数）の読み取り：メール上部のアイコン列にカンマ区切りの人数が
+  // 兵力（部隊人数）の読み取り：カンマ区切りの人数が
   // 自分(歩兵→騎兵→弓兵)・相手(歩兵→騎兵→弓兵)の順で計6個並んでいる。
-  // 「追加ステータス」「ボーナス詳細」欄より前の範囲だけを対象にし、
+  // ブロック構造ではラベルの前後に兵数が分散するため、全文から
   // 3桁カンマ区切りの数値（メールIDなど桁の多い無区切り数値は除外）を上から拾う。
-  var bonusIdx=lines.findIndex(function(l){return l.indexOf("追加ステータス")!==-1||l.indexOf("ボーナス詳細")!==-1;});
-  var scanEnd=bonusIdx===-1?lines.length:bonusIdx;
   var troopNums=[];
-  for(var j=0;j<scanEnd;j++){
+  for(var j=0;j<lines.length;j++){
     if(/^\d{1,3}(,\d{3})+$/.test(lines[j])) troopNums.push(parseInt(lines[j].replace(/,/g,""),10));
   }
   // 兵士レベル（ティア）の読み取り：兵数アイコンの「Lv.10.0」等（小数部＝真金強化レベル）。
-  // OCRのゆらぎ（'Lv.10.0 / Lv.10.0- など前後のノイズ）を許容し、兵数と同じ順
-  // （自分 歩→騎→弓、相手 歩→騎→弓）で最大6個拾う。
+  // OCRのゆらぎ（'Lv.10.0 / Lv.10.0- / NLv.10.0 など前後のノイズ）を許容し、
+  // 全文から兵数と同じ順（自分 歩→騎→弓、相手 歩→騎→弓）で最大6個拾う。
   var tierVals=[];
-  for(var j2=0;j2<scanEnd;j2++){
+  for(var j2=0;j2<lines.length;j2++){
     var lm=lines[j2].match(/Lv\.?\s*(\d{1,2}(?:\.\d)?)/i);
     if(lm) tierVals.push(lm[1]);
   }
